@@ -1,0 +1,171 @@
+{
+  "res_apartment": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "AGE",
+      "FLOOR_NUM",
+      "BEDROOM_NUM",
+      "BALCONY_NUM",
+      "FURNISH",
+      "FACING",
+      "LOCALITY_NAME"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY",
+        "AGE",
+        "FLOOR_NUM",
+        "BEDROOM_NUM",
+        "BALCONY_NUM",
+        "FURNISH"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  },
+  "rent_apartment": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "AGE",
+      "FLOOR_NUM",
+      "BEDROOM_NUM",
+      "FURNISH",
+      "BALCONY_NUM",
+      "FACING",
+      "LOCALITY_NAME"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY",
+        "AGE",
+        "FURNISH",
+        "FLOOR_NUM",
+        "BEDROOM_NUM",
+        "BALCONY_NUM"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  },
+  "ind_floor": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "AGE",
+      "FLOOR_NUM",
+      "BEDROOM_NUM",
+      "FURNISH",
+      "BALCONY_NUM",
+      "FACING",
+      "LOCALITY_NAME"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY",
+        "AGE",
+        "FURNISH",
+        "FLOOR_NUM",
+        "BEDROOM_NUM",
+        "BALCONY_NUM"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  },
+  "rent_ind_floor": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "AGE",
+      "FLOOR_NUM",
+      "BEDROOM_NUM",
+      "FURNISH",
+      "BALCONY_NUM",
+      "FACING",
+      "LOCALITY_NAME"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY",
+        "AGE",
+        "FURNISH",
+        "FLOOR_NUM",
+        "BEDROOM_NUM",
+        "BALCONY_NUM"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  },
+  "ind_house": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "AGE",
+      "FURNISH",
+      "FACING",
+      "LOCALITY_NAME"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY",
+        "AGE",
+        "FURNISH"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  },
+  "res_land": {
+    "target": "PRICE",
+    "all_cols": [
+      "AREA",
+      "CITY",
+      "FACING"
+    ],
+    "num_cols": [
+      "AREA"
+    ],
+    "cat_cols": {
+      "ord_cols": [
+        "CITY"
+      ],
+      "ohe_cols": [
+        "FACING",
+        "LOCALITY_NAME"
+      ]
+    }
+  }
+}
