@@ -7,7 +7,7 @@ from . import utils
 from .form_options import form_options
 
 
-class SelectBox:
+class FormField:
     @staticmethod
     def CITY(
         label: str = "Select City",
