@@ -3,12 +3,12 @@ from typing import Self
 import pandas as pd
 
 
-class Options:
+class FormOptions:
     _instance = None
 
     def __new__(cls) -> Self:
         if cls._instance is None:
-            cls._instance = super(Options, cls).__new__(cls)
+            cls._instance = super(FormOptions, cls).__new__(cls)
             cls._instance._init_options()
         return cls._instance
 
@@ -46,4 +46,4 @@ class Options:
         return df["CITY"].tolist()
 
 
-options = Options()
+form_options = FormOptions()

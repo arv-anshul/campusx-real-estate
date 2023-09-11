@@ -4,7 +4,7 @@ import streamlit as st
 from streamlit.delta_generator import DeltaGenerator
 
 from . import utils
-from .options import options
+from .form_options import form_options
 
 
 class SelectBox:
@@ -15,7 +15,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.CITY,
+            options=form_options.CITY,
             disabled=True,
             key="CITY",
         )
@@ -27,7 +27,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.LOCALITY_NAME,
+            options=form_options.LOCALITY_NAME,
             key="LOCALITY_NAME",
         )
 
@@ -50,7 +50,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.FACING,
+            options=form_options.FACING,
             key="FACING",
         )
 
@@ -61,7 +61,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.AGE,
+            options=form_options.AGE,
             key="AGE",
         )
 
@@ -72,7 +72,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.FURNISH,
+            options=form_options.FURNISH,
             key="FURNISH",
         )
 
@@ -83,7 +83,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.BEDROOM_NUM,
+            options=form_options.BEDROOM_NUM,
             key="BEDROOM_NUM",
             format_func=utils.format_99_option,
         )
@@ -95,7 +95,7 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.BALCONY_NUM,
+            options=form_options.BALCONY_NUM,
             key="BALCONY_NUM",
             format_func=utils.format_99_option,
         )
@@ -107,6 +107,6 @@ class SelectBox:
     ):
         getattr(st if pos is None else pos, "selectbox")(
             label,
-            options=options.FLOOR_NUM,
+            options=form_options.FLOOR_NUM,
             key="FLOOR_NUM",
         )
