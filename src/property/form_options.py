@@ -2,6 +2,8 @@ from typing import Self
 
 import pandas as pd
 
+from src.core.constants import CITY_CSV, LOCALITY_NAME_CSV
+
 
 class FormOptions:
     _instance = None
@@ -38,11 +40,11 @@ class FormOptions:
         self.CITY: list[str] = self.__load_cities()
 
     def __load_locality_names(self) -> list[str]:
-        df = pd.read_csv("data/LOCALITY_NAME.csv")
+        df = pd.read_csv(LOCALITY_NAME_CSV)
         return df["LOCALITY_NAME"].tolist()
 
     def __load_cities(self) -> list[str]:
-        df = pd.read_csv("data/CITY.csv")
+        df = pd.read_csv(CITY_CSV)
         return df["CITY"].tolist()
 
 
