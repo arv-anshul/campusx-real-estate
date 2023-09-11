@@ -1,4 +1,6 @@
 """ Contains the project constants. """
+from pathlib import Path
+
 from src.property.entity import (
     IndFloor,
     IndHouse,
@@ -18,3 +20,7 @@ ALL_PROPERTY: dict[PropertyAlias, PropertyType] = {
     "ind_house": IndHouse(),
     "res_land": ResLand(),
 }
+
+# --- --- Database Constants --- --- #
+DATA_SCHEMA_PATH = Path("src/database/schema.json")
+

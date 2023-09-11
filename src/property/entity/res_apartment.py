@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.database.reader import SchemaReader
+from src.database.schema_reader import SchemaReader
 from src.property.form_field import FormField
 
 from . import PropertyType

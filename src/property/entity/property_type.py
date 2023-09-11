@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.database.reader import SchemaReader
+from src.database.schema_reader import SchemaReader
 
 
 class PropertyType(ABC):

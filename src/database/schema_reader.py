@@ -1,6 +1,7 @@
 import json
 from typing import Self
 
+from src.core.constants import DATA_SCHEMA_PATH
 from src.typing import CAT_COLS_Key, PropertyAlias
 
 
@@ -14,7 +15,7 @@ class SchemaReader:
         return cls._instance[prop_type]
 
     def _load_schema(self, prop_type: PropertyAlias):
-        schema_dict = json.load(open("src/database/schema.json"))[prop_type]
+        schema_dict = json.load(open(DATA_SCHEMA_PATH))[prop_type]
 
         self.TARGET: str = schema_dict["target"]
         self.ALL_COLS: list[str] = schema_dict["all_cols"]
