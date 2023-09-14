@@ -1,7 +1,7 @@
 import streamlit as st
 
-from src.core.constants import ALL_PROPERTY
 from src.property import utils as prop_utils
+from src.property.entity import ALL_PROPERTY
 from src.typing import PropertyAlias
 from src.utils import st_pages
 
