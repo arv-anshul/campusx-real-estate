@@ -36,16 +36,17 @@ class FormOptions:
         self.BEDROOM_NUM: list[int] = [1, 2, 3, 4, 5, 99]
         self.BALCONY_NUM: list[int] = [0, 1, 2, 3, 4, 99]
         self.FLOOR_NUM: list[str] = ["low rise", "mid rise", "high rise"]
-        self.LOCALITY_NAME: list[str] = self.__load_locality_names()
         self.CITY: list[str] = self.__load_cities()
-
-    def __load_locality_names(self) -> list[str]:
-        df = pd.read_csv(LOCALITY_NAME_CSV)
-        return df["LOCALITY_NAME"].tolist()
 
     def __load_cities(self) -> list[str]:
         df = pd.read_csv(CITY_CSV)
         return df["CITY"].tolist()
+
+    def LOCALITY_NAME(self, city_: str) -> list[str]:
+        locality = pd.read_csv(LOCALITY_NAME_CSV).merge(
+            pd.read_csv(CITY_CSV), how="inner", on="CITY_ID"
+        )
+        return locality.query("CITY==@city_")["LOCALITY_NAME"].tolist()
 
 
 form_options = FormOptions()

@@ -11,16 +11,6 @@ def get_df_from_session_state(prop: PropertyType):
     ).T
 
 
-def is_valid_locality_selected() -> None:
-    city: str = st.session_state["CITY"]
-    locality_name: str = st.session_state["LOCALITY_NAME"]
-
-    if city.lower() in locality_name.lower():
-        return
-
-    raise ValueError(f"Invalid locality name selected for {city} city.")
-
-
 def format_99_option(x: int):
     """Format the encode value `99` in **BEDROOM_NUM** and **BALCONY_NUM** feature."""
     if x == 99 or x == "99":

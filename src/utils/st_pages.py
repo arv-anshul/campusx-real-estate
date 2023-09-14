@@ -7,3 +7,7 @@ def decorate_options(x):
     x = x.replace("Ind", "Independent", 1)
     x = x.replace("Rent", "Rental", 1)
     return x
+
+
+def colorizer(s: str, c: str = "red") -> str:
+    return f":{c}[{s}]"

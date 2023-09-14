@@ -11,10 +11,6 @@ class RentIndFloor(PropertyType):
 
     @staticmethod
     def st_form():
-        l, r = st.columns(2)
-        FormField.CITY(pos=l)
-        FormField.LOCALITY_NAME(pos=r)
-
         FormField.AREA()
         FormField.FACING()
 

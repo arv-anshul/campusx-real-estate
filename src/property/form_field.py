@@ -9,29 +9,6 @@ from .form_options import form_options
 
 class FormField:
     @staticmethod
-    def CITY(
-        label: str = "Select City",
-        pos: Optional[DeltaGenerator] = None,
-    ):
-        getattr(st if pos is None else pos, "selectbox")(
-            label,
-            options=form_options.CITY,
-            disabled=True,
-            key="CITY",
-        )
-
-    @staticmethod
-    def LOCALITY_NAME(
-        label: str = "Select Locality",
-        pos: Optional[DeltaGenerator] = None,
-    ):
-        getattr(st if pos is None else pos, "selectbox")(
-            label,
-            options=form_options.LOCALITY_NAME,
-            key="LOCALITY_NAME",
-        )
-
-    @staticmethod
     def AREA(
         label: str = "Area (in sq.ft.)",
         pos: Optional[DeltaGenerator] = None,
