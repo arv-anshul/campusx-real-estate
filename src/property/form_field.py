@@ -28,6 +28,7 @@ class FormField:
         getattr(st if pos is None else pos, "selectbox")(
             label,
             options=form_options.FACING,
+            format_func=lambda x: x.title(),
             key="FACING",
         )
 
@@ -39,6 +40,7 @@ class FormField:
         getattr(st if pos is None else pos, "selectbox")(
             label,
             options=form_options.AGE,
+            format_func=lambda x: x.title(),
             key="AGE",
         )
 
@@ -50,6 +52,7 @@ class FormField:
         getattr(st if pos is None else pos, "selectbox")(
             label,
             options=form_options.FURNISH,
+            format_func=lambda x: x.title(),
             key="FURNISH",
         )
 
@@ -85,5 +88,6 @@ class FormField:
         getattr(st if pos is None else pos, "selectbox")(
             label,
             options=form_options.FLOOR_NUM,
+            format_func=lambda x: x.title(),
             key="FLOOR_NUM",
         )

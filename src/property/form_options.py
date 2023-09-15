@@ -15,23 +15,23 @@ class FormOptions:
         return cls._instance
 
     def _init_options(self) -> None:
-        self.FURNISH: list[str] = ["Unfurnished", "Semifurnished", "Furnished"]
+        self.FURNISH: list[str] = ["unfurnished", "semifurnished", "furnished"]
         self.FACING: list[str] = [
-            "North-East",
-            "East",
-            "North",
-            "South-East",
-            "South",
-            "West",
-            "South-West",
-            "North-West",
+            "north-east",
+            "east",
+            "north",
+            "south-east",
+            "south",
+            "west",
+            "south-west",
+            "north-west",
         ]
         self.AGE: list[str] = [
-            "10+ Year Old Property",
-            "5-10 Year Old Property",
-            "1-5 Year Old Property",
-            "0-1 Year Old Property",
-            "Under Construction",
+            "10+ year old property",
+            "5-10 year old property",
+            "1-5 year old property",
+            "0-1 year old property",
+            "under construction",
         ]
         self.BEDROOM_NUM: list[int] = [1, 2, 3, 4, 5, 99]
         self.BALCONY_NUM: list[int] = [0, 1, 2, 3, 4, 99]
