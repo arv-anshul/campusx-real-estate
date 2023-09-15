@@ -5,7 +5,7 @@ from src.database.schema_reader import SchemaReader
 from src.property import utils
 from src.property.form_field import FormField
 
-from . import PropertyType
+from ..property_type import PropertyType
 
 
 class RentIndFloor(PropertyType):

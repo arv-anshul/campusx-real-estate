@@ -1,4 +1,4 @@
-from .property_type import PropertyType  # isort:skip
+from ..property_type import PropertyType  # isort:skip
 from src.typing import PropertyAlias
 
 from .ind_floor import IndFloor
