@@ -3,7 +3,7 @@ from typing import Optional
 import streamlit as st
 from streamlit.delta_generator import DeltaGenerator
 
-from . import utils
+from . import _utils
 from .form_options import form_options
 
 
@@ -62,7 +62,7 @@ class FormField:
             label,
             options=form_options.BEDROOM_NUM,
             key="BEDROOM_NUM",
-            format_func=utils.format_99_option,
+            format_func=_utils.format_99_option,
         )
 
     @staticmethod
@@ -74,7 +74,7 @@ class FormField:
             label,
             options=form_options.BALCONY_NUM,
             key="BALCONY_NUM",
-            format_func=utils.format_99_option,
+            format_func=_utils.format_99_option,
         )
 
     @staticmethod

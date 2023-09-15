@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.database.schema_reader import SchemaReader
-from src.property import utils
+from src.property import _utils
 from src.property.form_field import FormField
 
 from ..property_type import PropertyType
@@ -29,7 +29,7 @@ class RentApartment(PropertyType):
 
     def extract_this_property(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.query("PROPERTY_TYPE==@self._PROPERTY_TYPE").reset_index(drop=True)
-        df = utils.query_for_rental_property(df, "PRICE<10_00_000")
+        df = _utils.query_for_rental_property(df, "PRICE<10_00_000")
 
         df["PROP_ID"] = self.prop_type
         return df

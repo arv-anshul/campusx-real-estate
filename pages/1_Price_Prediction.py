@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.property import utils as prop_utils
+from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.property.form_options import form_options
 from src.typing import PropertyAlias

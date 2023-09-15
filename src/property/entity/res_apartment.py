@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.database.schema_reader import SchemaReader
-from src.property import utils
+from src.property import _utils
 from src.property.form_field import FormField
 
 from ..property_type import PropertyType
@@ -32,7 +32,7 @@ class ResApartment(PropertyType):
         df = df.drop(
             index=df[
                 df["PROP_ID"].isin(
-                    utils.query_for_rental_property(df, "PRICE<10_00_000")["PROP_ID"]
+                    _utils.query_for_rental_property(df, "PRICE<10_00_000")["PROP_ID"]
                 )
             ].index
         ).reset_index(drop=True)

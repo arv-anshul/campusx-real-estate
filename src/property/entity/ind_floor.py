@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.database.schema_reader import SchemaReader
-from src.property import utils
+from src.property import _utils
 from src.property.form_field import FormField
 
 from ..property_type import PropertyType
@@ -31,7 +31,9 @@ class IndFloor(PropertyType):
         df = df.query("PROPERTY_TYPE==@self._PROPERTY_TYPE").reset_index(drop=True)
         df = df.drop(
             index=df[
-                df["PROP_ID"].isin(utils.query_for_rental_property(df, "PRICE<8_00_000")["PROP_ID"])
+                df["PROP_ID"].isin(
+                    _utils.query_for_rental_property(df, "PRICE<8_00_000")["PROP_ID"]
+                )
             ].index
         ).reset_index(drop=True)
 
