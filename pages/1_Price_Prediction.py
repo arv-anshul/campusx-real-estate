@@ -1,13 +1,23 @@
 import streamlit as st
 
+from src.core.errors import ModelNotFoundError
 from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.property.form_options import form_options
-from src.typing import PropertyAlias
+from src.typing import DatasetType, PropertyAlias
 from src.utils import st_pages
 
 st.set_page_config("Price Prediction", "🏘️", "centered", "expanded")
-st_msg = st.empty()
+st_msg = st.container()
+
+st.sidebar.selectbox(
+    "Choose the model for prediction",
+    options=["main", "user"],
+    format_func=lambda x: x.capitalize(),
+    help="This is used to select the model for prediction.",
+    key="DatasetType",
+)
+dataset_type: DatasetType = st.session_state["DatasetType"]
 
 prop_type: PropertyAlias = st.sidebar.radio(
     "Select Property Type",
@@ -18,9 +28,19 @@ prop_type: PropertyAlias = st.sidebar.radio(
     label_visibility="collapsed",
 )  # type: ignore
 
+st.subheader(st_pages.colorizer(st_pages.decorate_options(prop_type), "green"), divider="green")
 selected_property = ALL_PROPERTY[prop_type]
 
-st.subheader(st_pages.colorizer(st_pages.decorate_options(prop_type), "green"), divider="green")
+# Button to train model of the selected property
+if not selected_property.get_model_path(dataset_type, "price_predictor").exists():
+    st.sidebar.button(
+        "🚆 Train Model 🚆",
+        use_container_width=True,
+        on_click=selected_property.train_price_predictor,
+        args=(dataset_type,),
+        type="primary",
+    )
+
 st.selectbox("Select City", options=["Select ..."] + form_options.CITY, key="CITY")
 
 if st.session_state["CITY"] != "Select ...":
@@ -48,4 +68,29 @@ with st.form("predictor_form"):
         st_msg.error(e, icon="🔥")
         st.stop()
 
-st.write(df)
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+# Price Prediction
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+try:
+    with st.spinner("Prediction in progress..."):
+        pred_price = selected_property.predict_price(df, dataset_type)
+except ModelNotFoundError as e:
+    st.toast("Error Occurred!!", icon="😵‍💫")
+    st_msg.error(e, icon="🤖")
+
+    # Button to train model of the selected property
+    st_msg.button(
+        "🚆 Train Model 🚆",  # Applied `**` to provide unique key
+        use_container_width=True,
+        on_click=selected_property.train_price_predictor,
+        args=(dataset_type,),
+        type="secondary",
+    )
+    st.toast("Are you in a hurry?", icon="🚅")
+
+    st.stop()
+
+st.subheader(
+    st_pages.colorizer(f"Prediction is {st_pages.format_price(pred_price)}"),
+    divider="rainbow",
+)

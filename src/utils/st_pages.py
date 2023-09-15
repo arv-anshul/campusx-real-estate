@@ -11,3 +11,15 @@ def decorate_options(x):
 
 def colorizer(s: str, c: str = "red") -> str:
     return f":{c}[{s}]"
+
+
+def format_price(price: float) -> str:
+    lakh = 1_00_000
+    crore = 1_00_00_000
+
+    if lakh <= price < (10 * lakh):
+        return f"₹ {price/lakh:.2f} Lac"
+    elif crore < price:
+        return f"₹ {price/crore:.2f} Cr"
+
+    return f"₹ {price:.2f}"
