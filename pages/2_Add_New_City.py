@@ -3,6 +3,7 @@ import streamlit as st
 
 from src.core.errors import DataValidationError
 from src.database.cleaner import DataCleaner
+from src.property.entity import ALL_PROPERTY
 from src.utils import st_pages
 
 st.set_page_config("Add new city", "🏙️", "wide", "expanded")
@@ -27,6 +28,7 @@ if uploaded is None:
 df = pd.read_csv(uploaded)
 
 
+# Validate the user's dataset for further progress
 try:
     DataCleaner.validate_dataset(df)
 except DataValidationError as e:
@@ -34,11 +36,23 @@ except DataValidationError as e:
     st_msg.error(e, icon="🔥")
     st.stop()
 
+# Clean the dataset with step first cleaning
 with st.spinner("Your Dataset is Cleaning..."):
     cleaner = DataCleaner(df)
     df = cleaner.initiate()
 
 st.toast("Your dataset is cleaned.", icon="🤓")
+
+# Split dataset into different properties
+progress_text = "Splitting the dataset into different properties..."
+with st.progress(0, progress_text):
+    total = len(ALL_PROPERTY)
+
+    for i, prop in enumerate(ALL_PROPERTY.values(), 1):
+        prop_df = prop.extract_this_property(df)
+        prop.dump_dataframe(prop_df)
+
+        st.progress(i / total, progress_text)
 
 # --- --- Uploaded dataset summary --- --- #
 tab1, tab2 = st.tabs(["🗃️ Show Dataset", "📈 Dataset Summary"])
