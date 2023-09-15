@@ -10,6 +10,8 @@ class ResLand(PropertyType):
     schema = SchemaReader("res_land")
     prop_type = "res_land"
     _PROPERTY_TYPE = "residential land"
+    _ord_cols = None
+    _ohe_cols = None
 
     @staticmethod
     def st_form():
