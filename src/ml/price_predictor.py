@@ -47,7 +47,7 @@ def create_pipeline(preprocessor: ColumnTransformer | None) -> Pipeline:
     pipe = Pipeline(
         steps=[
             ("scaler", StandardScaler()),
-            ("rf_reg", RandomForestRegressor(n_estimators=500)),
+            ("reg_model", RandomForestRegressor(n_estimators=500)),
         ]
     )
 

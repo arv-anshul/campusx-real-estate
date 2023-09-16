@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Literal, TypeAlias
+from warnings import warn
 
 import dill
 import numpy as np
 import pandas as pd
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 
 from src.core import io
 from src.core.errors import ModelNotFoundError
 from src.database.schema_reader import SchemaReader
-from src.ml import price_predictor
-from src.typing import DatasetType, PropertyAlias
-
-ModelType: TypeAlias = Literal["price_predictor"]
+from src.ml import model_details, price_predictor
+from src.typing import DatasetType, ModelType, PropertyAlias
 
 
 class PropertyType(ABC):
@@ -84,3 +84,38 @@ class PropertyType(ABC):
 
         pred_price = np.expm1(pipeline.predict(df))
         return pred_price[0]  # type: ignore
+
+    def store_model_details(self, dataset_type: DatasetType, model_type: ModelType) -> None:
+        model_path = self.get_model_path(dataset_type, model_type)
+        df = io.read_csv(self.get_dataset_path(dataset_type))
+
+        X = df.drop(columns=["PRICE"])
+        y = np.log1p(df["PRICE"])
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+        # Load model
+        try:
+            with open(model_path, "rb") as f:
+                pipeline: Pipeline = dill.load(f)
+        except FileNotFoundError:
+            raise ModelNotFoundError(f"Model for {self.prop_type} is not trained yet.")
+
+        scores = cross_val_score(estimator=pipeline, X=X_train, y=y_train, cv=5, scoring="r2")
+        pipeline.fit(X_train, y_train)
+
+        try:
+            y_pred = np.expm1(pipeline.predict(X_test))
+        except ValueError as e:  # When any/some predicted value become inf or NaN
+            warn(str(e), category=UserWarning)
+            y_pred = y_test
+
+        details = model_details.ModelDetailsItem(
+            class_name=pipeline.named_steps["reg_model"].__class__.__name__,
+            r2_score_mean=round(scores.mean(), 3),
+            r2_score_std=round(scores.std(), 3),
+            mae=round(float(mean_absolute_error(np.expm1(y_test), y_pred)), 3),
+        )
+
+        model_details_path = model_details.get_model_details_file_path(dataset_type, model_type)
+        model_details.append_details(model_details_path, self.prop_type, details)

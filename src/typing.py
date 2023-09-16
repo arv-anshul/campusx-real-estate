@@ -11,3 +11,4 @@ PropertyAlias: t.TypeAlias = t.Literal[
 CAT_COLS_Key: t.TypeAlias = t.Literal["ord_cols", "ohe_cols"]
 
 DatasetType: t.TypeAlias = t.Literal["main", "user"]
+ModelType: t.TypeAlias = t.Literal["price_predictor"]

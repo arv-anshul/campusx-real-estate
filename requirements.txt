@@ -6,3 +6,4 @@ plotly
 scikit-learn
 dill
 streamlit
+pydantic
