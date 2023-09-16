@@ -16,6 +16,7 @@ with st.form("add_new_city"):
         type=["csv"],
         label_visibility="collapsed",
     )
+    extend = st.checkbox("Extend with existing data.", value=True)
 
     if not st.form_submit_button(use_container_width=True):
         st.stop()
@@ -50,7 +51,7 @@ with st.progress(0, progress_text):
 
     for i, prop in enumerate(ALL_PROPERTY.values(), 1):
         prop_df = prop.extract_this_property(df)
-        prop.dump_dataframe(prop_df)
+        prop.dump_dataframe(prop_df, "user", extend)
 
         st.progress(i / total, progress_text)
 

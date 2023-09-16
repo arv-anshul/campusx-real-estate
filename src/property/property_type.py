@@ -33,11 +33,16 @@ class PropertyType(ABC):
     def extract_this_property(self, df: pd.DataFrame) -> pd.DataFrame:
         ...
 
-    def dump_dataframe(self, df: pd.DataFrame) -> None:
+    def dump_dataframe(
+        self,
+        df: pd.DataFrame,
+        dataset_type: DatasetType,
+        extend: bool,
+    ) -> None:
         """For now store the data at `data/processed/props` directory."""
-        fp = Path("data/processed/props") / f"{self.prop_type}.csv"
+        fp = Path("data") / dataset_type / f"{self.prop_type}.csv"
 
-        if fp.exists():
+        if fp.exists() and extend:
             old_df = pd.read_csv(fp)
             df = pd.concat([old_df, df], axis="index").drop_duplicates(["PROP_ID"])
 
