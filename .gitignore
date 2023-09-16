@@ -22,6 +22,9 @@ stored_models/
 .streamlit/
 data/raw/
 data/processed/
+models/main/
+models/user/
+data/user/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
