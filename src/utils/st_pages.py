@@ -17,7 +17,7 @@ def format_price(price: float) -> str:
     lakh = 1_00_000
     crore = 1_00_00_000
 
-    if lakh <= price < (10 * lakh):
+    if lakh <= price < crore:
         return f"₹ {price/lakh:.2f} Lac"
     elif crore < price:
         return f"₹ {price/crore:.2f} Cr"
