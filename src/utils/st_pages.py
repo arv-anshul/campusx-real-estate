@@ -1,6 +1,9 @@
 """Functions for streamlit app's pages."""
 
 
+import pandas as pd
+
+
 def decorate_options(x):
     x = " ".join(x.split("_")).title()
     x = x.replace("Res", "Residential", 1)
@@ -23,3 +26,7 @@ def format_price(price: float) -> str:
         return f"₹ {price/crore:.2f} Cr"
 
     return f"₹ {price:.2f}"
+
+
+def get_center_lat_lon(df: pd.DataFrame) -> dict[str, float]:
+    return {'lat': df['LATITUDE'].median(), 'lon': df['LONGITUDE'].median()}
