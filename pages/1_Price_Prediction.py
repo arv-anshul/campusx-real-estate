@@ -40,6 +40,16 @@ if not selected_property.get_model_path(dataset_type, "price_predictor").exists(
         args=(dataset_type,),
         type="primary",
     )
+else:
+    with st.spinner("Re-Training in progress..."):
+        _ = st.sidebar.button(
+            "🚆 Re-Train Model 🚆",
+            use_container_width=True,
+        )
+        if _:
+            selected_property.train_price_predictor(dataset_type)
+            st_msg.info("Model Re-trained successfully.", icon="🚅")
+
 
 st.selectbox(
     "Select City",
