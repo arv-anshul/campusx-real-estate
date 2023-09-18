@@ -15,7 +15,8 @@ class SchemaReader:
         return cls._instance[prop_type]
 
     def _load_schema(self, prop_type: PropertyAlias):
-        schema_dict = json.load(open(DATA_SCHEMA_PATH))[prop_type]
+        with open(DATA_SCHEMA_PATH) as f:
+            schema_dict = json.load(f)[prop_type]
 
         self.TARGET: str = schema_dict["target"]
         self.ALL_COLS: list[str] = schema_dict["all_cols"]
