@@ -1,8 +1,10 @@
+from pathlib import Path
 from typing import Self
 
-import pandas as pd
+import streamlit as st
 
-from src.core.constants import CITY_CSV, LOCALITY_NAME_CSV
+from src.core import io
+from src.typing import DatasetType, PropertyAlias
 
 
 class FormOptions:
@@ -36,17 +38,25 @@ class FormOptions:
         self.BEDROOM_NUM: list[int] = [1, 2, 3, 4, 5, 99]
         self.BALCONY_NUM: list[int] = [0, 1, 2, 3, 4, 99]
         self.FLOOR_NUM: list[str] = ["low rise", "mid rise", "high rise"]
-        self.CITY: list[str] = self.__load_cities()
 
-    def __load_cities(self) -> list[str]:
-        df = pd.read_csv(CITY_CSV)
-        return df["CITY"].tolist()
+    @staticmethod
+    @st.cache_data
+    def CITY(dataset_type: DatasetType, prop_type: PropertyAlias) -> list[str]:
+        fp = Path("data") / dataset_type / f"{prop_type}.csv"
+        df = io.read_csv(fp)
 
-    def LOCALITY_NAME(self, city_: str) -> list[str]:
-        locality = pd.read_csv(LOCALITY_NAME_CSV).merge(
-            pd.read_csv(CITY_CSV), how="inner", on="CITY_ID"
-        )
-        return locality.query("CITY==@city_")["LOCALITY_NAME"].tolist()
+        cities = df["CITY"].unique().tolist()
+        return sorted(map(lambda x: x.title(), cities))
+
+    @staticmethod
+    @st.cache_data
+    def LOCALITY_NAME(city_: str, dataset_type: DatasetType, prop_type: PropertyAlias) -> list[str]:
+        fp = Path("data") / dataset_type / f"{prop_type}.csv"
+        df = io.read_csv(fp)
+
+        city_ = city_.lower()
+        localities = df.query("CITY==@city_")["LOCALITY_NAME"].unique().tolist()
+        return sorted(map(lambda x: x.title(), localities))
 
 
 form_options = FormOptions()

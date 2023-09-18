@@ -41,12 +41,16 @@ if not selected_property.get_model_path(dataset_type, "price_predictor").exists(
         type="primary",
     )
 
-st.selectbox("Select City", options=["Select ..."] + form_options.CITY, key="CITY")
+st.selectbox(
+    "Select City",
+    options=["Select ..."] + form_options.CITY(dataset_type, prop_type),
+    key="CITY",
+)
 
 if st.session_state["CITY"] != "Select ...":
     st.selectbox(
         "Select Locality",
-        options=form_options.LOCALITY_NAME(st.session_state["CITY"]),
+        options=form_options.LOCALITY_NAME(st.session_state["CITY"], dataset_type, prop_type),
         key="LOCALITY_NAME",
     )
 else:
