@@ -24,6 +24,7 @@ class ResApartment(PropertyType):
         "BEDROOM_NUM": [1, 2, 3, 4, 5, 99],
         "BALCONY_NUM": [0, 1, 2, 3, 4, 99],
         "FLOOR_NUM": ["low rise", "mid rise", "high rise"],
+        "LUXURY_CATEGORY": [0, 1, 2],
     }
     _ohe_cols = ["FACING", "LOCALITY_NAME"]
 
@@ -40,6 +41,8 @@ class ResApartment(PropertyType):
         FormField.BEDROOM_NUM(pos=l)
         FormField.BALCONY_NUM(pos=m)
         FormField.FLOOR_NUM(pos=r)
+
+        FormField.LUXURY_CATEGORY()
 
     def extract_this_property(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.query("PROPERTY_TYPE==@self._PROPERTY_TYPE").reset_index(drop=True)

@@ -38,6 +38,7 @@ class FormOptions:
         self.BEDROOM_NUM: list[int] = [1, 2, 3, 4, 5, 99]
         self.BALCONY_NUM: list[int] = [0, 1, 2, 3, 4, 99]
         self.FLOOR_NUM: list[str] = ["low rise", "mid rise", "high rise"]
+        self.LUXURY_CATEGORY: dict[int, str] = {0: "Budget", 1: "Semi-Luxury", 2: "Full-Luxury"}
 
     @staticmethod
     @st.cache_data

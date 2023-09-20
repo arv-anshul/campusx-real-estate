@@ -10,7 +10,8 @@
       "BALCONY_NUM",
       "FURNISH",
       "FACING",
-      "LOCALITY_NAME"
+      "LOCALITY_NAME",
+      "LUXURY_CATEGORY"
     ],
     "num_cols": [
       "AREA"
@@ -22,7 +23,8 @@
         "FLOOR_NUM",
         "BEDROOM_NUM",
         "BALCONY_NUM",
-        "FURNISH"
+        "FURNISH",
+        "LUXURY_CATEGORY"
       ],
       "ohe_cols": [
         "FACING",
@@ -41,7 +43,8 @@
       "FURNISH",
       "BALCONY_NUM",
       "FACING",
-      "LOCALITY_NAME"
+      "LOCALITY_NAME",
+      "LUXURY_CATEGORY"
     ],
     "num_cols": [
       "AREA"
@@ -53,7 +56,8 @@
         "FURNISH",
         "FLOOR_NUM",
         "BEDROOM_NUM",
-        "BALCONY_NUM"
+        "BALCONY_NUM",
+        "LUXURY_CATEGORY"
       ],
       "ohe_cols": [
         "FACING",
@@ -72,7 +76,8 @@
       "FURNISH",
       "BALCONY_NUM",
       "FACING",
-      "LOCALITY_NAME"
+      "LOCALITY_NAME",
+      "LUXURY_CATEGORY"
     ],
     "num_cols": [
       "AREA"
@@ -84,7 +89,8 @@
         "FURNISH",
         "FLOOR_NUM",
         "BEDROOM_NUM",
-        "BALCONY_NUM"
+        "BALCONY_NUM",
+        "LUXURY_CATEGORY"
       ],
       "ohe_cols": [
         "FACING",
@@ -103,7 +109,8 @@
       "FURNISH",
       "BALCONY_NUM",
       "FACING",
-      "LOCALITY_NAME"
+      "LOCALITY_NAME",
+      "LUXURY_CATEGORY"
     ],
     "num_cols": [
       "AREA"
@@ -115,7 +122,8 @@
         "FURNISH",
         "FLOOR_NUM",
         "BEDROOM_NUM",
-        "BALCONY_NUM"
+        "BALCONY_NUM",
+        "LUXURY_CATEGORY"
       ],
       "ohe_cols": [
         "FACING",

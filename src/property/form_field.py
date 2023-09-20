@@ -91,3 +91,15 @@ class FormField:
             format_func=lambda x: x.title(),
             key="FLOOR_NUM",
         )
+
+    @staticmethod
+    def LUXURY_CATEGORY(
+        label: str = "Select Luxury Category",
+        pos: Optional[DeltaGenerator] = None,
+    ):
+        getattr(st if pos is None else pos, "selectbox")(
+            label,
+            options=form_options.LUXURY_CATEGORY.keys(),
+            format_func=lambda x: form_options.LUXURY_CATEGORY[x],
+            key="LUXURY_CATEGORY",
+        )
