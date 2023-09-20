@@ -161,7 +161,7 @@
     "all_cols": [
       "AREA",
       "CITY",
-      "FACING"
+      "LOCALITY_NAME"
     ],
     "num_cols": [
       "AREA"
@@ -171,7 +171,6 @@
         "CITY"
       ],
       "ohe_cols": [
-        "FACING",
         "LOCALITY_NAME"
       ]
     }

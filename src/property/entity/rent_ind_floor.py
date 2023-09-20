@@ -12,21 +12,6 @@ class RentIndFloor(PropertyType):
     schema = SchemaReader("rent_ind_floor")
     prop_type = "rent_ind_floor"
     _PROPERTY_TYPE = "independent/builder floor"
-    _ord_cols = {
-        "FURNISH": ["unfurnished", "semifurnished", "furnished"],
-        "AGE": [
-            "10+ year old property",
-            "5-10 year old property",
-            "1-5 year old property",
-            "0-1 year old property",
-            "under construction",
-        ],
-        "BEDROOM_NUM": [1, 2, 3, 4, 5, 99],
-        "BALCONY_NUM": [0, 1, 2, 3, 4, 99],
-        "FLOOR_NUM": ["low rise", "mid rise", "high rise"],
-        "LUXURY_CATEGORY": [0, 1, 2],
-    }
-    _ohe_cols = ["FACING", "LOCALITY_NAME"]
 
     @staticmethod
     def st_form():

@@ -1,14 +1,19 @@
 import pandas as pd
-import streamlit as st
 
-from src.property.entity import PropertyType
-
-
-def get_df_from_session_state(prop: PropertyType):
-    return pd.DataFrame.from_dict(
-        {k: v for k in prop.schema.ALL_COLS for i, v in st.session_state.items() if k == i},
-        orient="index",
-    ).T
+ORD_COLS_MAPPING = {
+    "FURNISH": ["unfurnished", "semifurnished", "furnished"],
+    "AGE": [
+        "10+ year old property",
+        "5-10 year old property",
+        "1-5 year old property",
+        "0-1 year old property",
+        "under construction",
+    ],
+    "BEDROOM_NUM": [1, 2, 3, 4, 5, 99],
+    "BALCONY_NUM": [0, 1, 2, 3, 4, 99],
+    "FLOOR_NUM": ["low rise", "mid rise", "high rise"],
+    "LUXURY_CATEGORY": [0, 1, 2],
+}
 
 
 def format_99_option(x: int):

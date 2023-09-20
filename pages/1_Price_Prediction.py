@@ -1,9 +1,10 @@
+import pandas as pd
 import streamlit as st
 
 from src.core.errors import ModelNotFoundError
-from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.property.form_options import form_options
+from src.property.property_type import PropertyType
 from src.typing import DatasetType, PropertyAlias
 from src.utils import st_pages
 
@@ -66,6 +67,14 @@ if st.session_state["CITY"] != "Select ...":
 else:
     st.stop()
 
+
+def get_df_from_session_state(prop: PropertyType):
+    return pd.DataFrame.from_dict(
+        {k: v for k in prop.schema.ALL_COLS for i, v in st.session_state.items() if k == i},
+        orient="index",
+    ).T
+
+
 # Show streamlit form according to selected prop_type
 with st.form("predictor_form"):
     try:
@@ -73,7 +82,7 @@ with st.form("predictor_form"):
 
         if st.form_submit_button():
             st.toast("Form Submitted!", icon="🌟")
-            df = prop_utils.get_df_from_session_state(selected_property)
+            df = get_df_from_session_state(selected_property)
         else:
             st.stop()
 

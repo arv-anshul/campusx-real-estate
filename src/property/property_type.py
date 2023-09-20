@@ -13,6 +13,7 @@ from src.core import io
 from src.core.errors import ModelNotFoundError
 from src.database.schema_reader import SchemaReader
 from src.ml import model_details, price_predictor
+from src.property import _utils
 from src.typing import DatasetType, ModelType, PropertyAlias
 
 
@@ -22,8 +23,15 @@ class PropertyType(ABC):
     schema: SchemaReader
     prop_type: PropertyAlias
     _PROPERTY_TYPE: str
-    _ord_cols: dict[str, list[str | int]] | None
-    _ohe_cols: list[str] | None
+
+    @property
+    def _ord_cols(self) -> dict[str, list[str | int]] | None:
+        return {
+            k: v
+            for k in self.schema.CAT_COLS["ord_cols"]
+            for i, v in _utils.ORD_COLS_MAPPING.items()
+            if i == k
+        }
 
     @abstractmethod
     def st_form(cls) -> None:
@@ -66,7 +74,9 @@ class PropertyType(ABC):
         y = np.log1p(df["PRICE"])
 
         # Create pipeline and train the model
-        preprocessor = price_predictor.get_preprocessor(self._ord_cols, self._ohe_cols)
+        preprocessor = price_predictor.get_preprocessor(
+            self._ord_cols, self.schema.CAT_COLS["ohe_cols"]
+        )
         pipeline = price_predictor.create_pipeline(preprocessor=preprocessor)
         pipeline.fit(X, y)
 

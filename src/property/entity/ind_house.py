@@ -12,17 +12,6 @@ class IndHouse(PropertyType):
     schema = SchemaReader("ind_house")
     prop_type = "ind_house"
     _PROPERTY_TYPE = "independent house/villa"
-    _ord_cols = {
-        "FURNISH": ["unfurnished", "semifurnished", "furnished"],
-        "AGE": [
-            "10+ year old property",
-            "5-10 year old property",
-            "1-5 year old property",
-            "0-1 year old property",
-            "under construction",
-        ],
-    }
-    _ohe_cols = ["FACING", "LOCALITY_NAME"]
 
     @staticmethod
     def st_form():
