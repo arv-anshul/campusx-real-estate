@@ -1,7 +1,9 @@
 from warnings import filterwarnings
 
+import pandas as pd
 import plotly.express as px
 import streamlit as st
+from plotly.graph_objects import Figure
 
 from src.core import io
 from src.property import _utils as prop_utils
@@ -72,45 +74,89 @@ curr_df = prop_df.groupby("LOCALITY_NAME")[
 ].mean()
 curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]].round(2)
 
-kwargs_for_scatter_mapbox: dict = dict(
-    data_frame=curr_df,
-    lat="LATITUDE",
-    lon="LONGITUDE",
-    color_continuous_scale=px.colors.cyclical.IceFire,
-    hover_name=curr_df.index.str.title(),
-    mapbox_style=st.session_state["MAPBOX_STYLE"],
-    center=st_pages.get_center_lat_lon(curr_df),
-    opacity=0.5,
-    zoom=10,
-    height=700,
-)
 
-with exp1_tabs[0]:
+@st.cache_data
+def plot_scatter_mapbox(color: str, hover_data: list[str], **kwargs) -> Figure:
+    kwargs_for_scatter_mapbox: dict = dict(
+        data_frame=curr_df,
+        lat="LATITUDE",
+        lon="LONGITUDE",
+        color_continuous_scale=px.colors.cyclical.IceFire,
+        hover_name=curr_df.index.str.title(),
+        center=st_pages.get_center_lat_lon(curr_df),
+        opacity=0.5,
+        zoom=10,
+        height=700,
+        **kwargs,
+    )
+
     fig = px.scatter_mapbox(
-        color="PRICE_PER_SQFT",
-        hover_data=["AREA", "PRICE"],
+        color=color,
+        hover_data=hover_data,
         **kwargs_for_scatter_mapbox,
     )
     fig.update_traces(marker_size=12)
+    return fig
+
+
+with exp1_tabs[0]:
+    fig = plot_scatter_mapbox(
+        color="PRICE_PER_SQFT",
+        hover_data=["AREA", "PRICE"],
+        mapbox_style=st.session_state["MAPBOX_STYLE"],
+    )
     st.plotly_chart(fig, True)
 
 with exp1_tabs[1]:
-    fig = px.scatter_mapbox(
+    fig = plot_scatter_mapbox(
         color="AREA",
         hover_data=["PRICE_PER_SQFT", "PRICE"],
-        **kwargs_for_scatter_mapbox,
+        mapbox_style=st.session_state["MAPBOX_STYLE"],
     )
-    fig.update_traces(marker_size=12)
     st.plotly_chart(fig, True)
 
 with exp1_tabs[2]:
-    fig = px.scatter_mapbox(
+    fig = plot_scatter_mapbox(
         color="PRICE",
         hover_data=["PRICE_PER_SQFT", "AREA"],
-        **kwargs_for_scatter_mapbox,
+        mapbox_style=st.session_state["MAPBOX_STYLE"],
     )
-    fig.update_traces(marker_size=12)
     st.plotly_chart(fig, True)
+
+
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+# Optimized Functions
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+@st.cache_data
+def plot_pie(df: pd.DataFrame, names: str | None, **kwargs) -> Figure:
+    fig = px.pie(df, names=names, **kwargs)
+    return fig
+
+
+@st.cache_data
+def plot_bar(df: pd.DataFrame, x: list[str], y: str | None, **kwargs) -> Figure:
+    fig = px.bar(df, x=x, y=y, **kwargs)
+    return fig
+
+
+@st.cache_data
+def plot_scatter(
+    df: pd.DataFrame,
+    x: str | None,
+    y: str | None,
+    color: str | None,
+    hover_name: str | None,
+    **kwargs,
+) -> Figure:
+    fig = px.scatter(df, x=x, y=y, color=color, hover_name=hover_name, **kwargs)
+    return fig
+
+
+@st.cache_data
+def plot_box(df: pd.DataFrame, x: str | None, y: str | None, **kwargs) -> Figure:
+    fig = px.box(df, x=x, y=y, **kwargs)
+    return fig
+
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Basic Insights Plots
@@ -127,7 +173,7 @@ locality: str = exp2.selectbox(
     format_func=lambda x: x.title(),
     key="LOCALITY_NAME",
 )  # type: ignore
-curr_df = prop_df if locality == "Overall" else prop_df.query("LOCALITY_NAME==@locality")
+curr_df = prop_df if locality == "Overall" else prop_df.query("LOCALITY_NAME==@locality").copy()
 
 exp2_tabs = exp2.tabs(
     [
@@ -138,7 +184,7 @@ exp2_tabs = exp2.tabs(
 
 with exp2_tabs[0]:
     curr_df["BEDROOM_NUM"] = curr_df["BEDROOM_NUM"].apply(prop_utils.format_99_option)
-    fig = px.pie(curr_df, "BEDROOM_NUM")
+    fig = plot_pie(curr_df, names="BEDROOM_NUM")
     st.plotly_chart(fig, True)
 
 
@@ -150,7 +196,7 @@ with exp2_tabs[1]:
         horizontal=True,
         label_visibility="collapsed",
     )
-    fig = px.bar(curr_data, curr_data.index, _)
+    fig = plot_bar(curr_data, x=curr_data.index.tolist(), y=_)
     st.plotly_chart(fig, True)
     st.dataframe(curr_data.T, use_container_width=True)
 
@@ -186,7 +232,7 @@ with exp3_tabs[0]:
         horizontal=True,
     )
 
-    fig = px.scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name=color_)
+    fig = plot_scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name=color_)
     st.plotly_chart(fig, True)
 
 with exp3_tabs[1]:
@@ -210,5 +256,5 @@ with exp3_tabs[1]:
         horizontal=True,
     )
 
-    fig = px.box(prop_df, x=x_, y=y_)
+    fig = plot_box(prop_df, x=x_, y=y_)
     st.plotly_chart(fig, True)
