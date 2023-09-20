@@ -5,16 +5,19 @@
 - [x] Rename `reader.py` to `schema_reader.py`.
 - [x] Make a constant in `constants.py` as `DATA_SCHEMA_PATH = Path("src/database/schema.json")`.
 - [x] Make constants for `LOCALITY_NAME.csv` and `CITY.csv` in `constants.py`.
-- [ ] ⭐ Add `LUXURY_SCORE` feature into `schema.json`, streamlit form and everywhere.
+- [x] Add `LUXURY_SCORE` feature into `schema.json`, streamlit form and everywhere.
 - [x] How can you validate the `LOCALITY_NAME` belongs to the particular `CITY`?
-- [ ] **LATER** How can you add new city dataset into the picture?
-- [ ] Store user's new data into different directory to differentiate between main data and user's data. And show analysis on it.
+- [x] How can you add new city dataset into the picture?
+- [x] Store user's new data into different directory to differentiate between main data and user's data. And show analysis on it.
+- [ ] Use `functions` with `@st.cache` decorator to optimize the **Analytics Page**.
+- [ ] Make a page to show Model Evaluation Metrics. Which are useful for other developers.
+- [ ] Add logging in the app.
 
 # Features
 
 - [ ] Use `st.tabs()` instead of `st.radio()` for good UI.
 - [ ] Add a custom streamlit theme.
-- [ ] Enhance the radio buttons in the [page](../pages/1_Price_Prediction.py) or you can use `st.selectbox` instead.
+- [ ] Enhance the radio buttons in the [page](./pages/1_Price_Prediction.py) or you can use `st.selectbox` instead.
 
 # Suggestions
 
