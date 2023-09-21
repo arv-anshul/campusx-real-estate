@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from warnings import warn
+from warnings import filterwarnings, warn
 
 import dill
 import numpy as np
@@ -15,6 +15,8 @@ from src.database.schema_reader import SchemaReader
 from src.ml import model_details, price_predictor
 from src.property import _utils
 from src.typing import DatasetType, ModelType, PropertyAlias
+
+filterwarnings("ignore", category=UserWarning)
 
 
 class PropertyType(ABC):
@@ -117,7 +119,6 @@ class PropertyType(ABC):
             raise ModelNotFoundError(f"Model for {self.prop_type} is not trained yet.")
 
         scores = cross_val_score(estimator=pipeline, X=X_train, y=y_train, cv=5, scoring="r2")
-        pipeline.fit(X_train, y_train)
 
         try:
             y_pred = np.expm1(pipeline.predict(X_test))
