@@ -13,7 +13,7 @@ from streamlit.elements.lib.mutable_status_container import StatusContainer
 from src.core import io
 from src.core.errors import ModelNotFoundError
 from src.database.schema_reader import SchemaReader
-from src.ml import model_details, price_predictor
+from src.ml import model_details
 from src.property import _utils
 from src.typing import DatasetType, ModelType, PropertyAlias
 
@@ -64,44 +64,6 @@ class PropertyType(ABC):
 
     def get_dataset_path(self, dataset_type: DatasetType) -> Path:
         return Path("data") / dataset_type / f"{self.prop_type}.csv"
-
-    def train_price_predictor(self, dataset_type: DatasetType) -> None:
-        """
-        Train a model to predict PRICE using `RandomForestRegressor`.
-
-        **Note:** Use `np.expm1` function after prediction to get the real price because
-        the PRICE feature is right skewed.
-        """
-        df = io.read_csv(self.get_dataset_path(dataset_type))
-        X = df.drop(columns=["PRICE"])
-        y = np.log1p(df["PRICE"])
-
-        # Create pipeline and train the model
-        preprocessor = price_predictor.get_preprocessor(
-            self._ord_cols, self.schema.CAT_COLS["ohe_cols"]
-        )
-        pipeline = price_predictor.create_pipeline(preprocessor=preprocessor)
-        pipeline.fit(X, y)
-
-        # Store the trained model
-        model_path = self.get_model_path(dataset_type, "price_predictor")
-        with open(model_path, "wb") as f:
-            dill.dump(pipeline, f)
-
-    def predict_price(self, df: pd.DataFrame, dataset_type: DatasetType) -> float:
-        # Load the stored model
-        model_path = self.get_model_path(dataset_type, "price_predictor")
-
-        try:
-            with open(model_path, "rb") as f:
-                pipeline: Pipeline = dill.load(f)
-        except FileNotFoundError:
-            raise ModelNotFoundError(
-                f"Price predictor model not found. Please try to train for `{self.prop_type}`."
-            )
-
-        pred_price = np.expm1(pipeline.predict(df))
-        return pred_price[0]  # type: ignore
 
     def store_model_details(
         self,
