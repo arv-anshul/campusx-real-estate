@@ -39,7 +39,7 @@ class PropertyType(ABC):
         extend: bool,
     ) -> None:
         """For now store the data at `data/processed/props` directory."""
-        fp = Path("data") / dataset_type / f"{self.prop_type}.csv"
+        fp = self.get_dataset_path(dataset_type)
 
         if fp.exists() and extend:
             old_df = pd.read_csv(fp)
