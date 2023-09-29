@@ -50,7 +50,3 @@ streamlit run Real_Estate_Project.py
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
-## Authors
-
-- [@arv-anshul](https://www.github.com/arv-anshul)
