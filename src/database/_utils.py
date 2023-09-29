@@ -1,14 +1,8 @@
-from pathlib import Path
-from typing import Any
-
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
-from src.core import io
-
-# List important columns for model building and for data analysis
 IMPORTANT_INIT_COLS = [
     "PROP_ID",
     "CITY",
@@ -150,16 +144,6 @@ def eval_numeric_values(x: str) -> str | float:
     if x.isnumeric():
         return int(x)
     return x
-
-
-def append_in_form_option(form_option_fp: Path, options: list[Any]):
-    df = pd.DataFrame(options)
-
-    if form_option_fp.exists():
-        old_df = io.read_csv(form_option_fp)
-        df = pd.concat([old_df, df], axis="index")
-
-    df.to_csv(form_option_fp, index=False)
 
 
 def create_LUXURY_CATEGORY(df: pd.DataFrame, n_clusters: int = 3) -> pd.Series:
