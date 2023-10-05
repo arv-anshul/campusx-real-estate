@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.typing import DatasetType, ModelType
+from src.typing import DatasetType, ModelType, PropertyAlias
 
 ORD_COLS_MAPPING = {
     "FURNISH": ["unfurnished", "semifurnished", "furnished"],
@@ -45,3 +45,13 @@ def get_model_details_file_path(dataset_type: DatasetType, model_type: ModelType
     path = Path("models") / dataset_type / f"{model_type}.json"
     path.parent.mkdir(exist_ok=True)
     return path
+
+
+def get_model_path(
+    prop_type: PropertyAlias, dataset_type: DatasetType, model_type: ModelType
+) -> Path:
+    return Path("models") / dataset_type / model_type / f"{prop_type}.dill"
+
+
+def get_dataset_path(prop_type: PropertyAlias, dataset_type: DatasetType) -> Path:
+    return Path("data") / dataset_type / f"{prop_type}.csv"

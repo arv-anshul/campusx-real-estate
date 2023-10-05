@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 import pandas as pd
 
 from src.database.schema_reader import SchemaReader
 from src.property import _utils
-from src.typing import DatasetType, ModelType, PropertyAlias
+from src.property._utils import get_dataset_path
+from src.typing import DatasetType, PropertyAlias
 
 
 class PropertyType(ABC):
@@ -39,16 +39,10 @@ class PropertyType(ABC):
         extend: bool,
     ) -> None:
         """For now store the data at `data/processed/props` directory."""
-        fp = self.get_dataset_path(dataset_type)
+        fp = get_dataset_path(self.prop_type, dataset_type)
 
         if fp.exists() and extend:
             old_df = pd.read_csv(fp)
             df = pd.concat([old_df, df], axis="index").drop_duplicates(["PROP_ID"])
 
         df.to_csv(fp, index=False)
-
-    def get_model_path(self, dataset_type: DatasetType, model_type: ModelType) -> Path:
-        return Path("models/") / dataset_type / model_type / f"{self.prop_type}.dill"
-
-    def get_dataset_path(self, dataset_type: DatasetType) -> Path:
-        return Path("data") / dataset_type / f"{self.prop_type}.csv"

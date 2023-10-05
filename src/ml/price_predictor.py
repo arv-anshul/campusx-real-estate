@@ -9,6 +9,7 @@ from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 
 from src.core import io
 from src.core.errors import ModelNotFoundError
+from src.property import _utils as prop_utils
 from src.property.property_type import PropertyType
 from src.typing import DatasetType
 
@@ -66,7 +67,7 @@ class PricePredictor:
         **Note:** Use `np.expm1` function after prediction to get the real price because
         the PRICE feature is right skewed.
         """
-        df = io.read_csv(self.prop.get_dataset_path(self.dataset_type))
+        df = io.read_csv(prop_utils.get_dataset_path(self.prop.prop_type, self.dataset_type))
         X = df.drop(columns=["PRICE"])
         y = np.log1p(df["PRICE"])
 
@@ -76,12 +77,16 @@ class PricePredictor:
         pipeline.fit(X, y)
 
         # Store the trained model
-        model_path = self.prop.get_model_path(self.dataset_type, self.model_type)
+        model_path = prop_utils.get_model_path(
+            self.prop.prop_type, self.dataset_type, self.model_type
+        )
         io.dill_dump(pipeline, model_path)
 
     def predict(self, df: pd.DataFrame) -> float:
         # Load the stored model
-        model_path = self.prop.get_model_path(self.dataset_type, self.model_type)
+        model_path = prop_utils.get_model_path(
+            self.prop.prop_type, self.dataset_type, self.model_type
+        )
 
         try:
             pipeline: Pipeline = io.dill_load(model_path)

@@ -11,8 +11,8 @@ from streamlit.elements.lib.mutable_status_container import StatusContainer
 from src.core import io
 from src.core.errors import ModelNotFoundError
 from src.property import _utils
-from src.property.property_type import PropertyType
-from src.typing import DatasetType, ModelType
+from src.property import _utils as prop_utils
+from src.typing import DatasetType, ModelType, PropertyAlias
 from src.utils._json_encoding import _json_default
 
 
@@ -36,12 +36,12 @@ class ModelDetailsJSON(BaseModel):
 class GetModelDetails:
     def __init__(
         self,
-        obj: PropertyType,
         *,
+        property_type: PropertyAlias,
         dataset_type: DatasetType,
         model_type: ModelType,
     ) -> None:
-        self.prop = obj
+        self.property_type: PropertyAlias = property_type
         self.dataset_type: DatasetType = dataset_type
         self.model_type: ModelType = model_type
         self.model_details_path = _utils.get_model_details_file_path(
@@ -62,22 +62,21 @@ class GetModelDetails:
 
     def append_details(self, details: ModelDetailsItem) -> None:
         data = self.load_details()
-        getattr(data, self.prop.prop_type).append(details)
+        getattr(data, self.property_type).append(details)
         self.dump_details(data)
 
     def store_model_details(self, st_status: StatusContainer) -> None:
-        model_path = self.prop.get_model_path(self.dataset_type, self.model_type)
-        df = io.read_csv(self.prop.get_dataset_path(self.dataset_type))
-
+        df = io.read_csv(prop_utils.get_dataset_path(self.property_type, self.dataset_type))
         X = df.drop(columns=["PRICE"])
         y = np.log1p(df["PRICE"])
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
-        # Load stored model
         try:
-            pipeline: Pipeline = io.dill_load(model_path)
+            pipeline: Pipeline = io.dill_load(
+                prop_utils.get_model_path(self.property_type, self.dataset_type, self.model_type)
+            )
         except FileNotFoundError:
-            raise ModelNotFoundError(f"Model for {self.prop.prop_type} is not trained yet.")
+            raise ModelNotFoundError(f"Model for {self.property_type} is not trained yet.")
 
         st_status.write("Calculating Cross Validation Score (R2 Score)...")
         scores = cross_val_score(estimator=pipeline, X=X_train, y=y_train, cv=5, scoring="r2")
