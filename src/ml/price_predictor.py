@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -22,32 +22,27 @@ class PricePredictor:
 
     @staticmethod
     def preprocessor(
-        ord_cols: dict[str, list[str | int]] | None,
-        ohe_cols: list[str] | None,
+        ord_cols: dict[str, list[str | int]], ohe_cols: list[str]
     ) -> ColumnTransformer:
-        transformers: list[tuple[str, Any, list[str]]] = [
+        transformers = [
             (
                 "log1p_area",
                 FunctionTransformer(func=np.log1p, inverse_func=np.expm1, validate=True),
                 ["AREA"],
-            )
+            ),
+            (
+                "ord",
+                OrdinalEncoder(categories=list(ord_cols.values())),
+                list(ord_cols.keys()),
+            ),
+            (
+                "ohe",
+                # FIXME: Improve the OneHotEncoding.
+                # TODO: Remove `handle_unknown` parameter and do something else.
+                OneHotEncoder(sparse_output=False, handle_unknown="ignore"),
+                ohe_cols,
+            ),
         ]
-
-        if ord_cols:
-            transformers.append(
-                ("ord", OrdinalEncoder(categories=list(ord_cols.values())), list(ord_cols.keys()))
-            )
-
-        if ohe_cols:
-            transformers.append(
-                (
-                    "ohe",
-                    # FIXME: Improve the OneHotEncoding.
-                    # TODO: Remove `handle_unknown` parameter and do something else.
-                    OneHotEncoder(sparse_output=False, handle_unknown="ignore"),
-                    ohe_cols,
-                )
-            )
 
         preprocessor = ColumnTransformer(transformers=transformers, remainder="drop")
         return preprocessor

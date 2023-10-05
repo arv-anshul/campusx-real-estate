@@ -16,7 +16,7 @@ class PropertyType(ABC):
     _PROPERTY_TYPE: str
 
     @property
-    def _ord_cols(self) -> dict[str, list[str | int]] | None:
+    def _ord_cols(self) -> dict[str, list[str | int]]:
         return {
             k: v
             for k in self.schema.CAT_COLS["ord_cols"]
