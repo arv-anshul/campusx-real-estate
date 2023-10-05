@@ -14,10 +14,11 @@ from src.typing import DatasetType
 
 
 class PricePredictor:
-    model_type: Literal['price_predictor'] = 'price_predictor'
+    model_type: Literal["price_predictor"] = "price_predictor"
 
-    def __init__(self, obj: PropertyType) -> None:
+    def __init__(self, obj: PropertyType, dataset_type: DatasetType) -> None:
         self.prop = obj
+        self.dataset_type: DatasetType = dataset_type
 
     @staticmethod
     def preprocessor(
@@ -59,20 +60,18 @@ class PricePredictor:
                 ("reg_model", RandomForestRegressor(n_estimators=500)),
             ]
         )
-
         if preprocessor:
             pipe.steps.insert(0, ("preprocessor", preprocessor))
-
         return pipe
 
-    def train(self, dataset_type: DatasetType) -> None:
+    def train(self) -> None:
         """
         Train a model to predict PRICE using `RandomForestRegressor`.
 
         **Note:** Use `np.expm1` function after prediction to get the real price because
         the PRICE feature is right skewed.
         """
-        df = io.read_csv(self.prop.get_dataset_path(dataset_type))
+        df = io.read_csv(self.prop.get_dataset_path(self.dataset_type))
         X = df.drop(columns=["PRICE"])
         y = np.log1p(df["PRICE"])
 
@@ -82,12 +81,12 @@ class PricePredictor:
         pipeline.fit(X, y)
 
         # Store the trained model
-        model_path = self.prop.get_model_path(dataset_type, self.model_type)
+        model_path = self.prop.get_model_path(self.dataset_type, self.model_type)
         io.dill_dump(pipeline, model_path)
 
-    def predict(self, df: pd.DataFrame, dataset_type: DatasetType) -> float:
+    def predict(self, df: pd.DataFrame) -> float:
         # Load the stored model
-        model_path = self.prop.get_model_path(dataset_type, self.model_type)
+        model_path = self.prop.get_model_path(self.dataset_type, self.model_type)
 
         try:
             pipeline: Pipeline = io.dill_load(model_path)
