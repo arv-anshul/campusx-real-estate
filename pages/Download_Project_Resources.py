@@ -1,5 +1,6 @@
 import streamlit as st
 
+from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.utils import st_pages
 
@@ -35,7 +36,9 @@ r.subheader(st_pages.colorizer("Download Datasets", "blue"), divider="blue")
 
 for i, (prop_type_, prop) in enumerate(ALL_PROPERTY.items()):
     # Download buttons for model
-    model_path = prop.get_model_path(dataset_type, st.session_state["ModelType"])
+    model_path = prop_utils.get_model_path(
+        prop.prop_type, dataset_type, st.session_state["ModelType"]
+    )
 
     if model_path.exists():
         with open(model_path, "rb") as model_file:
@@ -56,7 +59,7 @@ for i, (prop_type_, prop) in enumerate(ALL_PROPERTY.items()):
         )
 
     # Download buttons for Dataset
-    dataset_path = prop.get_dataset_path(dataset_type)
+    dataset_path = prop_utils.get_dataset_path(prop.prop_type, dataset_type)
 
     if dataset_path.exists():
         with open(dataset_path) as dataset_file:

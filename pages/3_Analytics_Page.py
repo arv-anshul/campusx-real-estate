@@ -35,7 +35,7 @@ prop_type: PropertyAlias = st.sidebar.radio(
 selected_property = ALL_PROPERTY[prop_type]
 
 try:
-    prop_df = io.read_csv(selected_property.get_dataset_path(dataset_type))
+    prop_df = io.read_csv(prop_utils.get_dataset_path(selected_property.prop_type, dataset_type))
 except FileNotFoundError:
     st.columns([0.1, 0.8, 0.1])[1].image(
         "https://indianmemetemplates.com/wp-content/uploads/Bhai-kya-kar-raha-hai-tu.jpg",

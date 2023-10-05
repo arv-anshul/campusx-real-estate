@@ -3,6 +3,7 @@ import streamlit as st
 
 from src.core.errors import ModelNotFoundError
 from src.ml.price_predictor import PricePredictor
+from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.property.form_options import form_options
 from src.property.property_type import PropertyType
@@ -32,10 +33,12 @@ prop_type: PropertyAlias = st.sidebar.radio(
 
 st.subheader(st_pages.colorizer(st_pages.decorate_options(prop_type), "green"), divider="green")
 selected_property = ALL_PROPERTY[prop_type]
-price_predictor = PricePredictor(selected_property)
+price_predictor = PricePredictor(selected_property, dataset_type)
 
 # Button to train model of the selected property
-if not selected_property.get_model_path(dataset_type, "price_predictor").exists():
+if not prop_utils.get_model_path(
+    selected_property.prop_type, dataset_type, "price_predictor"
+).exists():
     st.sidebar.button(
         "🚆 Train Model 🚆",
         use_container_width=True,
@@ -50,7 +53,7 @@ else:
             use_container_width=True,
         )
         if _:
-            price_predictor.train(dataset_type)
+            price_predictor.train()
             st_msg.info("Model Re-trained successfully.", icon="🚅")
 
 
@@ -98,7 +101,7 @@ with st.form("predictor_form"):
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 try:
     with st.spinner("Prediction in progress..."):
-        pred_price = price_predictor.predict(df, dataset_type)
+        pred_price = price_predictor.predict(df)
 except ModelNotFoundError as e:
     st.toast("Error Occurred!!", icon="😵‍💫")
     st_msg.error(e, icon="🤖")
