@@ -9,9 +9,11 @@
 - [x] How can you validate the `LOCALITY_NAME` belongs to the particular `CITY`?
 - [x] How can you add new city dataset into the picture?
 - [x] Store user's new data into different directory to differentiate between main data and user's data. And show analysis on it.
-- [ ] Use `functions` with `@st.cache` decorator to optimize the **Analytics Page**.
+- [x] Use `functions` with `@st.cache` decorator to optimize the **Analytics Page**.
 - [ ] Make a page to show Model Evaluation Metrics. Which are useful for other developers.
-- [ ] Add logging in the app.
+- [ ] ~~Add logging in the app.~~ **(Not for now.)**
+- [ ] Fetch the new discussed Gurgaon data and perform EDA on it. Then, use that data in the project for better analysis and prediction.
+- [ ] Do something about Recommender system.
 
 # Features
 
