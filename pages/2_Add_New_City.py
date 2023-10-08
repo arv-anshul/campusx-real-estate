@@ -4,6 +4,7 @@ import streamlit as st
 from src.core.errors import DataValidationError
 from src.database.cleaner import DataCleaner
 from src.property.entity import ALL_PROPERTY
+from src.typing import stop as _stop
 from src.utils import st_pages
 
 st.set_page_config("Add new city", "🏙️", "wide", "expanded")
@@ -19,12 +20,12 @@ with st.form("add_new_city"):
     extend = st.checkbox("Extend with existing data.", value=True)
 
     if not st.form_submit_button(use_container_width=True):
-        st.stop()
+        _stop()
 
 if uploaded is None:
     st.toast("Something went wrong!", icon="😵‍💫")
     st_msg.error("Uploaded file is gives None to streamlit.")
-    st.stop()
+    _stop()
 
 df = pd.read_csv(uploaded)
 
@@ -35,7 +36,7 @@ try:
 except DataValidationError as e:
     st.toast("Something went wrong!", icon="😵‍💫")
     st_msg.error(e, icon="🔥")
-    st.stop()
+    _stop()
 
 # Clean the dataset with step first cleaning
 with st.spinner("Your Dataset is Cleaning..."):

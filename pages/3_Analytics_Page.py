@@ -9,6 +9,7 @@ from src.core import io
 from src.property import _utils as prop_utils
 from src.property.entity import ALL_PROPERTY
 from src.typing import DatasetType, PropertyAlias
+from src.typing import stop as _stop
 from src.utils import st_pages
 
 filterwarnings("ignore", category=UserWarning)
@@ -43,7 +44,7 @@ except FileNotFoundError:
     )
     st.info("User data not found. Upload your data [here](/Add_New_City).", icon="💢")
     st.toast("Data upload kar bhai!", icon="🤦")
-    st.stop()
+    _stop()
 
 prop_df["PRICE_PER_SQFT"] = prop_df["PRICE"].div(prop_df["AREA"])
 
@@ -163,7 +164,7 @@ def plot_box(df: pd.DataFrame, x: str | None, y: str | None, **kwargs) -> Figure
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 if prop_type == "res_land":
     st.info(f"No BHK comparison for {st_pages.decorate_options(prop_type)}", icon="🥹")
-    st.stop()
+    _stop()
 
 exp2 = st.expander("**🧠 Basic Insights Plots**", expanded=True)
 

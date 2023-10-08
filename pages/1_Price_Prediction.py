@@ -8,6 +8,7 @@ from src.property.entity import ALL_PROPERTY
 from src.property.form_options import form_options
 from src.property.property_type import PropertyType
 from src.typing import DatasetType, PropertyAlias
+from src.typing import stop as _stop
 from src.utils import st_pages
 
 st.set_page_config("Price Prediction", "🏘️", "centered", "expanded")
@@ -70,7 +71,7 @@ if st.session_state["CITY"] != "Select ...":
         key="LOCALITY_NAME",
     )
 else:
-    st.stop()
+    _stop()
 
 
 def get_df_from_session_state(prop: PropertyType):
@@ -89,12 +90,12 @@ with st.form("predictor_form"):
             st.toast("Form Submitted!", icon="🌟")
             df = get_df_from_session_state(selected_property)
         else:
-            st.stop()
+            _stop()
 
     except ValueError as e:
         st.toast("Got an Error!", icon="😵‍💫")
         st_msg.error(e, icon="🔥")
-        st.stop()
+        _stop()
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Price Prediction
@@ -116,7 +117,7 @@ except ModelNotFoundError as e:
     )
     st.toast("Are you in a hurry?", icon="🚅")
 
-    st.stop()
+    _stop()
 
 st.subheader(
     st_pages.colorizer(f"Prediction is {st_pages.format_price(pred_price)}"),
