@@ -9,7 +9,7 @@ from src.core.errors import DataValidationError
 from . import _utils
 from .decode_feature import DecodeFeature
 
-DUMP_DATASET_PATH = Path("data/processed/gurgaon_10k.csv")
+DUMP_DATASET_PATH = Path("data/user/user_data.csv")
 
 
 class DataCleaner:
@@ -42,7 +42,7 @@ class DataCleaner:
         return df
 
     def dump_to_mongodb(self, df: pd.DataFrame) -> pd.DataFrame:
-        """For now just save the dataset into `data/processed/` directory."""
+        """For now just save the dataset into `data/user/` directory."""
         if DUMP_DATASET_PATH.exists():
             old_df = io.read_csv(DUMP_DATASET_PATH)
             df = pd.concat([old_df, df], axis="index")
