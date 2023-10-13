@@ -76,7 +76,6 @@ curr_df = prop_df.groupby("LOCALITY_NAME")[
 curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]].round(2)
 
 
-@st.cache_data
 def plot_scatter_mapbox(color: str, hover_data: list[str], **kwargs) -> Figure:
     kwargs_for_scatter_mapbox: dict = dict(
         data_frame=curr_df,
