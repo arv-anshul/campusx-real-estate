@@ -44,7 +44,6 @@ if not prop_utils.get_model_path(
         "🚆 Train Model 🚆",
         use_container_width=True,
         on_click=price_predictor.train,
-        args=(dataset_type,),
         type="primary",
     )
 else:
@@ -112,7 +111,6 @@ except ModelNotFoundError as e:
         "🚆 Train Model 🚆",  # Applied `**` to provide unique key
         use_container_width=True,
         on_click=price_predictor.train,
-        args=(dataset_type,),
         type="secondary",
     )
     st.toast("Are you in a hurry?", icon="🚅")
