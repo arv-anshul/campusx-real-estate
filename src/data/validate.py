@@ -1,7 +1,7 @@
 import pandas as pd
 
 from src.core.errors import DataValidationError
-from src.database import _utils
+from src.data import _utils
 
 
 def validate_dataset(df: pd.DataFrame):

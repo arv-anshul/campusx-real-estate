@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.database.schema_reader import SchemaReader
+from src.data.schema_reader import SchemaReader
 from src.property.form_field import FormField
 
 from ..property_type import PropertyType

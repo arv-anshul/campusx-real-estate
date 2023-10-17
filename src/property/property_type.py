@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import pandas as pd
 
-from src.database.schema_reader import SchemaReader
+from src.data.schema_reader import SchemaReader
 from src.property import _utils
 from src.property._utils import get_dataset_path
 from src.typing import DatasetType, PropertyAlias

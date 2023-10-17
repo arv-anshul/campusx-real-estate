@@ -2,8 +2,8 @@ import pandas as pd
 import streamlit as st
 
 from src.core.errors import DataValidationError
-from src.database import validate
-from src.database.cleaner import DataCleaner
+from src.data import validate
+from src.data.cleaner import DataCleaner
 from src.property.entity import ALL_PROPERTY
 from src.typing import stop as _stop
 from src.utils import st_pages

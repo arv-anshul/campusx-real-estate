@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.database.schema_reader import SchemaReader
+from src.data.schema_reader import SchemaReader
 from src.property import _utils
 from src.property.form_field import FormField
 
