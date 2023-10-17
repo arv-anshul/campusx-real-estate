@@ -48,6 +48,13 @@ REQUIRED_COLS = [
     "SOCIETY_NAME",
 ]
 
+COLS_TO_ESTIMATE_AREA = [
+    "BUILTUP_SQFT",
+    "CARPET_SQFT",
+    "SUPERBUILTUP_SQFT",
+    "SUPER_SQFT",
+]
+
 FEATURES_MAPPING = {
     "Parking": 5,
     "Park": 7,

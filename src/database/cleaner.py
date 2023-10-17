@@ -1,20 +1,66 @@
 from ast import literal_eval
+from functools import cached_property
 from pathlib import Path
 
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 from src.core import io
 from src.core.errors import DataValidationError
 
 from . import _utils
+from ._utils import COLS_TO_ESTIMATE_AREA
 from .decode_feature import DecodeFeature
 
 DUMP_DATASET_PATH = Path("data/user/user_data.csv")
 
 
-class DataCleaner:
-    __slots__ = ("__df",)
+class AreaEstimator:
+    __slots__ = ("df",)
 
+    def __init__(self, df: pd.DataFrame) -> None:
+        estimator_cols = [
+            "BUILTUP_SQFT",
+            "CARPET_SQFT",
+            "SUPERBUILTUP_SQFT",
+            "SUPER_SQFT",
+        ]
+        self.df = df[estimator_cols].copy(True)
+
+    def _impute_with_super_area(self) -> None:
+        temp = self.df[self.df["BUILTUP_SQFT"].isnull() & self.df["SUPER_SQFT"].notnull()][
+            "SUPER_SQFT"
+        ]
+        self.df.loc[temp.index, "BUILTUP_SQFT"] = temp
+
+    def _train_model(self, X_cols: list[str]) -> LinearRegression:
+        dropped_df = self.df.dropna(subset=X_cols + ["BUILTUP_SQFT"], how="any")
+        model = LinearRegression()
+        model.fit(dropped_df[X_cols], dropped_df["BUILTUP_SQFT"])
+        return model
+
+    def _estimate_area(self, X_cols: list[str]) -> None:
+        model = self._train_model(X_cols)
+
+        # Filter dataset to make prediction
+        # --- --- --- --- HOW --- --- --- --- #
+        # - BUILTUP_SQFT must be null.
+        # - CARPET_SQFT/SUPERBUILTUP_SQFT must not be null.
+        data_for_pred = self.df[self.df["BUILTUP_SQFT"].isnull()].dropna(subset=X_cols)
+
+        # Calculate the area estimates and inplace them
+        estimates = model.predict(data_for_pred[X_cols]).round(0).astype(int)
+        self.df.loc[data_for_pred.index, "BUILTUP_SQFT"] = estimates
+
+    def estimate(self) -> pd.Series:
+        self._impute_with_super_area()
+        self._estimate_area(["CARPET_SQFT", "SUPERBUILTUP_SQFT"])
+        self._estimate_area(["CARPET_SQFT"])
+        self._estimate_area(["SUPERBUILTUP_SQFT"])
+        return self.df["BUILTUP_SQFT"]
+
+
+class DataCleaner:
     def __init__(self, df: pd.DataFrame) -> None:
         self.__df = df
 
@@ -72,16 +118,26 @@ class DataCleaner:
 
         return df
 
+    @cached_property
+    def is_v2_dataset(self) -> bool:
+        return set(COLS_TO_ESTIMATE_AREA).issubset(self.__df.columns.tolist())
+
     def initiate(self) -> pd.DataFrame:
         """
         `Load -> Decode & Clean -> Dump -> Return`
         """
+        area_estimator = AreaEstimator(self.__df) if self.is_v2_dataset else None
+
         df = self.__df[_utils.IMPORTANT_INIT_COLS].map(
             lambda x: x.lower() if isinstance(x, str) else x
         )  # type: ignore
-
         decoder = DecodeFeature(df)
-        df = decoder.run_all()
+
+        if area_estimator is not None:
+            df = decoder.run_all("decode_AREA")
+            df["AREA"] = area_estimator.estimate()
+        else:
+            df = decoder.run_all()
 
         df = self._clean_df(df)
         df = self._fillna(df)
