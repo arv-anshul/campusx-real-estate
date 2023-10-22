@@ -15,6 +15,12 @@
 - [ ] Fetch the new discussed Gurgaon data and perform EDA on it. Then, use that data in the project for better analysis and prediction.
 - [ ] Do something about Recommender system.
 
+## Analytics Features
+
+- [ ] Add selectbox to select CITY and also refresh the map which recenter the map to the city.
+- [ ] Add BHK radio button in `scatter_mapbox` plot.
+- [ ] Create new page and add better plots in new page.
+
 # Features
 
 - [ ] Use `st.tabs()` instead of `st.radio()` for good UI.
