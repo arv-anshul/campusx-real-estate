@@ -117,7 +117,16 @@ LANDMARKS_GROUPS = {
         "miscellaneou",
         "parking",  # Maybe this value is being over-shadowed by `park` in LEISURE.
     ],
-    "LEISURE": ["shop", "mall", "park", "stadium", "club", "pool", "attraction", "golf"],
+    "LEISURE": [
+        "shop",
+        "mall",
+        "park",
+        "stadium",
+        "club",
+        "pool",
+        "attraction",
+        "golf",
+    ],
     "EDUCATION": ["education", "library"],
     "HEALTH": ["hospital", "pharmacy"],
 }
@@ -157,6 +166,8 @@ def create_LUXURY_CATEGORY(df: pd.DataFrame, n_clusters: int = 3) -> pd.Series:
     scaler = StandardScaler()
     data_ = scaler.fit_transform(df)
 
-    cluster = KMeans(n_clusters=n_clusters, init="k-means++", n_init=10, random_state=42)
+    cluster = KMeans(
+        n_clusters=n_clusters, init="k-means++", n_init=10, random_state=42
+    )
 
     return pd.Series(cluster.fit_predict(data_), name="LUXURY_CATEGORY")

@@ -6,7 +6,10 @@ from src.utils import st_pages
 
 st.set_page_config("Download Resources", "🔻", "centered", "expanded")
 
-st.header(f"🔻 {st_pages.colorizer('Download Resources of this Project', 'red')}", divider="red")
+st.header(
+    f"🔻 {st_pages.colorizer('Download Resources of this Project', 'red')}",
+    divider="red",
+)
 
 st.selectbox(
     "Select **Data Type**",

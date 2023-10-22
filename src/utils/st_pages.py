@@ -1,6 +1,5 @@
 """Functions for streamlit app's pages."""
 
-
 import pandas as pd
 
 
@@ -29,4 +28,4 @@ def format_price(price: float) -> str:
 
 
 def get_center_lat_lon(df: pd.DataFrame) -> dict[str, float]:
-    return {'lat': df['LATITUDE'].median(), 'lon': df['LONGITUDE'].median()}
+    return {"lat": df["LATITUDE"].median(), "lon": df["LONGITUDE"].median()}

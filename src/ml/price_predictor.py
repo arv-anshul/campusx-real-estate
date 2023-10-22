@@ -28,7 +28,9 @@ class PricePredictor:
         transformers = [
             (
                 "log1p_area",
-                FunctionTransformer(func=np.log1p, inverse_func=np.expm1, validate=True),
+                FunctionTransformer(
+                    func=np.log1p, inverse_func=np.expm1, validate=True
+                ),
                 ["AREA"],
             ),
             (
@@ -67,12 +69,16 @@ class PricePredictor:
         **Note:** Use `np.expm1` function after prediction to get the real price because
         the PRICE feature is right skewed.
         """
-        df = io.read_csv(prop_utils.get_dataset_path(self.prop.prop_type, self.dataset_type))
+        df = io.read_csv(
+            prop_utils.get_dataset_path(self.prop.prop_type, self.dataset_type)
+        )
         X = df.drop(columns=["PRICE"])
         y = np.log1p(df["PRICE"])
 
         # Create pipeline and train the model
-        preprocessor = self.preprocessor(self.prop._ord_cols, self.prop.schema.CAT_COLS["ohe_cols"])
+        preprocessor = self.preprocessor(
+            self.prop._ord_cols, self.prop.schema.CAT_COLS["ohe_cols"]
+        )
         pipeline = self.pipeline(preprocessor)
         pipeline.fit(X, y)
 

@@ -41,7 +41,9 @@ def query_for_rental_property(
     return df
 
 
-def get_model_details_file_path(dataset_type: DatasetType, model_type: ModelType) -> Path:
+def get_model_details_file_path(
+    dataset_type: DatasetType, model_type: ModelType
+) -> Path:
     path = Path("models") / dataset_type / f"{model_type}.json"
     path.parent.mkdir(exist_ok=True)
     return path

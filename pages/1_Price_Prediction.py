@@ -32,7 +32,9 @@ prop_type: PropertyAlias = st.sidebar.radio(
     label_visibility="collapsed",
 )  # type: ignore
 
-st.subheader(st_pages.colorizer(st_pages.decorate_options(prop_type), "green"), divider="green")
+st.subheader(
+    st_pages.colorizer(st_pages.decorate_options(prop_type), "green"), divider="green"
+)
 selected_property = ALL_PROPERTY[prop_type]
 price_predictor = PricePredictor(selected_property, dataset_type)
 
@@ -66,7 +68,9 @@ st.selectbox(
 if st.session_state["CITY"] != "Select ...":
     st.selectbox(
         "Select Locality",
-        options=form_options.LOCALITY_NAME(st.session_state["CITY"], dataset_type, prop_type),
+        options=form_options.LOCALITY_NAME(
+            st.session_state["CITY"], dataset_type, prop_type
+        ),
         key="LOCALITY_NAME",
     )
 else:
@@ -75,7 +79,12 @@ else:
 
 def get_df_from_session_state(prop: PropertyType):
     return pd.DataFrame.from_dict(
-        {k: v for k in prop.schema.ALL_COLS for i, v in st.session_state.items() if k == i},
+        {
+            k: v
+            for k in prop.schema.ALL_COLS
+            for i, v in st.session_state.items()
+            if k == i
+        },
         orient="index",
     ).T
 

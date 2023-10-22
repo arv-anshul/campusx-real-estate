@@ -66,20 +66,30 @@ class GetModelDetails:
         self.dump_details(data)
 
     def store_model_details(self, st_status: StatusContainer) -> None:
-        df = io.read_csv(prop_utils.get_dataset_path(self.property_type, self.dataset_type))
+        df = io.read_csv(
+            prop_utils.get_dataset_path(self.property_type, self.dataset_type)
+        )
         X = df.drop(columns=["PRICE"])
         y = np.log1p(df["PRICE"])
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.25, random_state=42
+        )
 
         try:
             pipeline: Pipeline = io.dill_load(
-                prop_utils.get_model_path(self.property_type, self.dataset_type, self.model_type)
+                prop_utils.get_model_path(
+                    self.property_type, self.dataset_type, self.model_type
+                )
             )
         except FileNotFoundError:
-            raise ModelNotFoundError(f"Model for {self.property_type} is not trained yet.")
+            raise ModelNotFoundError(
+                f"Model for {self.property_type} is not trained yet."
+            )
 
         st_status.write("Calculating Cross Validation Score (R2 Score)...")
-        scores = cross_val_score(estimator=pipeline, X=X_train, y=y_train, cv=5, scoring="r2")
+        scores = cross_val_score(
+            estimator=pipeline, X=X_train, y=y_train, cv=5, scoring="r2"
+        )
 
         try:
             st_status.write("Predicting `X_test` for more scoring metrics...")

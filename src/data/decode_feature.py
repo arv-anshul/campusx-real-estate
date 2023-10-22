@@ -23,7 +23,9 @@ class DecodeFeature:
 
         :return: All the methods `method.startswith('_decode')` and `method[-1].isupper()` in sorted form.
         """
-        return [i for i in sorted(dir(self)) if i.startswith("decode_") and i[-1].isupper()]
+        return [
+            i for i in sorted(dir(self)) if i.startswith("decode_") and i[-1].isupper()
+        ]
 
     def run_all(self, *skip: str) -> pd.DataFrame:
         """
@@ -63,15 +65,21 @@ class DecodeFeature:
 
     def decode_AREA(self) -> None:
         self.__df = self.__df.drop(
-            index=self.__df[~self.__df["AREA"].str.contains("sq.ft.", regex=False)].index
+            index=self.__df[
+                ~self.__df["AREA"].str.contains("sq.ft.", regex=False)
+            ].index
         ).drop(index=self.__df[self.__df["AREA"].str.contains("-")].index)
         self.__df["AREA"] = self.__df["AREA"].str.split(" ").str.get(0).astype(float)
 
     def decode_FEATURES(self) -> None:
         features_df = io.read_csv(C.FACETS_PATH / "FEATURES.csv")
-        features_df["values"] = features_df["label"].map(_utils.FEATURES_MAPPING, "ignore")
+        features_df["values"] = features_df["label"].map(
+            _utils.FEATURES_MAPPING, "ignore"
+        )
 
-        lookup_values = features_df[["id", "values"]].set_index("id").to_dict()["values"]
+        lookup_values = (
+            features_df[["id", "values"]].set_index("id").to_dict()["values"]
+        )
         self.__df["FEATURES_SCORE"] = self.__df["FEATURES"].apply(
             _utils.lookup_mapping, args=(lookup_values,)
         )
@@ -84,7 +92,9 @@ class DecodeFeature:
             .apply(lambda x: [i.get("text") for i in x])
         )
 
-        def handle_landmarks(x: list[str], key: str, landmarks_group: dict[str, list[str]]) -> None:
+        def handle_landmarks(
+            x: list[str], key: str, landmarks_group: dict[str, list[str]]
+        ) -> None:
             rv: int = 0
 
             for i in x:
@@ -106,13 +116,19 @@ class DecodeFeature:
             self.__df[col_name] = self.temp_data
 
     def decode_BEDROOM_NUM(self) -> None:
-        self.__df["BEDROOM_NUM"] = self.__df["BEDROOM_NUM"].apply(lambda x: x if x <= 5 else 99)
+        self.__df["BEDROOM_NUM"] = self.__df["BEDROOM_NUM"].apply(
+            lambda x: x if x <= 5 else 99
+        )
 
     def decode_BALCONY_NUM(self) -> None:
-        self.__df["BALCONY_NUM"] = self.__df["BALCONY_NUM"].apply(lambda x: x if x <= 4 else 99)
+        self.__df["BALCONY_NUM"] = self.__df["BALCONY_NUM"].apply(
+            lambda x: x if x <= 4 else 99
+        )
 
     def decode_FLOOR_NUM(self) -> None:
-        self.__df["FLOOR_NUM"] = self.__df["FLOOR_NUM"].apply(_utils.eval_numeric_values)
+        self.__df["FLOOR_NUM"] = self.__df["FLOOR_NUM"].apply(
+            _utils.eval_numeric_values
+        )
         self.__df["FLOOR_NUM"] = self.__df["FLOOR_NUM"].apply(
             lambda x: x
             if pd.isna(x)
@@ -134,7 +150,9 @@ class DecodeFeature:
         self.__df["AMENITIES"] = self.__df["AMENITIES"].str.split(",")
 
         amenity_df = io.read_csv(C.FACETS_PATH / "AMENITIES.csv")
-        amenity_df["values"] = amenity_df["label"].map(_utils.AMENITIES_MAPPING, "ignore")
+        amenity_df["values"] = amenity_df["label"].map(
+            _utils.AMENITIES_MAPPING, "ignore"
+        )
 
         lookup_values = amenity_df[["id", "values"]].set_index("id").to_dict()["values"]
         self.__df["AMENITIES_SCORE"] = self.__df["AMENITIES"].apply(

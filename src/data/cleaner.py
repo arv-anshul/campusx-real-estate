@@ -27,9 +27,9 @@ class AreaEstimator:
         self.df = df[estimator_cols].copy(True)
 
     def _impute_with_super_area(self) -> None:
-        temp = self.df[self.df["BUILTUP_SQFT"].isnull() & self.df["SUPER_SQFT"].notnull()][
-            "SUPER_SQFT"
-        ]
+        temp = self.df[
+            self.df["BUILTUP_SQFT"].isnull() & self.df["SUPER_SQFT"].notnull()
+        ]["SUPER_SQFT"]
         self.df.loc[temp.index, "BUILTUP_SQFT"] = temp
 
     def _train_model(self, X_cols: list[str]) -> LinearRegression:
@@ -97,11 +97,15 @@ class DataCleaner:
         return df
 
     def _fillna(self, df: pd.DataFrame) -> pd.DataFrame:
-        df["TOTAL_LANDMARK_COUNT"].fillna(round(df["TOTAL_LANDMARK_COUNT"].mean()), inplace=True)
+        df["TOTAL_LANDMARK_COUNT"].fillna(
+            round(df["TOTAL_LANDMARK_COUNT"].mean()), inplace=True
+        )
         df["AMENITIES_SCORE"].fillna(round(df["AMENITIES_SCORE"].mean()), inplace=True)
 
         _ = ["residential land", "independent/builder floor"]
-        df["FURNISH"].fillna(df.query("PROPERTY_TYPE != @_")["FURNISH"].mode()[0], inplace=True)
+        df["FURNISH"].fillna(
+            df.query("PROPERTY_TYPE != @_")["FURNISH"].mode()[0], inplace=True
+        )
 
         df["FACING"].fillna(df["FACING"].mode()[0], inplace=True)
         df["AGE"].fillna(df["AGE"].mode()[0], inplace=True)
@@ -110,10 +114,12 @@ class DataCleaner:
 
         # BALCONY_NUM
         temp = df[df["BALCONY_NUM"].isnull()]
-        temp_mapping = df.pivot_table("BALCONY_NUM", "BEDROOM_NUM", aggfunc="median").to_dict()[
-            "BALCONY_NUM"
-        ]
-        df.loc[temp.index, "BALCONY_NUM"] = df.loc[temp.index, "BEDROOM_NUM"].map(temp_mapping)
+        temp_mapping = df.pivot_table(
+            "BALCONY_NUM", "BEDROOM_NUM", aggfunc="median"
+        ).to_dict()["BALCONY_NUM"]
+        df.loc[temp.index, "BALCONY_NUM"] = df.loc[temp.index, "BEDROOM_NUM"].map(
+            temp_mapping
+        )
 
         return df
 

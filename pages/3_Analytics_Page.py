@@ -36,7 +36,9 @@ prop_type: PropertyAlias = st.sidebar.radio(
 selected_property = ALL_PROPERTY[prop_type]
 
 try:
-    prop_df = io.read_csv(prop_utils.get_dataset_path(selected_property.prop_type, dataset_type))
+    prop_df = io.read_csv(
+        prop_utils.get_dataset_path(selected_property.prop_type, dataset_type)
+    )
 except FileNotFoundError:
     st.columns([0.1, 0.8, 0.1])[1].image(
         "https://indianmemetemplates.com/wp-content/uploads/Bhai-kya-kar-raha-hai-tu.jpg",
@@ -73,7 +75,9 @@ exp1_tabs = exp1.tabs(
 curr_df = prop_df.groupby("LOCALITY_NAME")[
     ["AREA", "PRICE", "PRICE_PER_SQFT", "LATITUDE", "LONGITUDE"]
 ].mean()
-curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]].round(2)
+curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[
+    ["AREA", "PRICE", "PRICE_PER_SQFT"]
+].round(2)
 
 
 def plot_scatter_mapbox(color: str, hover_data: list[str], **kwargs) -> Figure:
@@ -173,7 +177,11 @@ locality: str = exp2.selectbox(
     format_func=lambda x: x.title(),
     key="LOCALITY_NAME",
 )  # type: ignore
-curr_df = prop_df if locality == "Overall" else prop_df.query("LOCALITY_NAME==@locality").copy()
+curr_df = (
+    prop_df
+    if locality == "Overall"
+    else prop_df.query("LOCALITY_NAME==@locality").copy()
+)
 
 exp2_tabs = exp2.tabs(
     [
@@ -189,7 +197,11 @@ with exp2_tabs[0]:
 
 
 with exp2_tabs[1]:
-    curr_data = curr_df.groupby("BEDROOM_NUM")[["PRICE", "AREA", "PRICE_PER_SQFT"]].mean().round(2)
+    curr_data = (
+        curr_df.groupby("BEDROOM_NUM")[["PRICE", "AREA", "PRICE_PER_SQFT"]]
+        .mean()
+        .round(2)
+    )
     _ = st.columns([0.35, 0.7])[-1].radio(
         "Choose Comparison Value",
         options=["PRICE_PER_SQFT", "AREA", "PRICE"],
