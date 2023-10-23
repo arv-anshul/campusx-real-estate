@@ -51,81 +51,59 @@ except FileNotFoundError:
 prop_df["PRICE_PER_SQFT"] = prop_df["PRICE"].div(prop_df["AREA"])
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-# Visualizations in Maps
+# Visualizations with Plotly Mapbox
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-exp1 = st.expander("**🗺️ Visualizations in Maps**", expanded=True)
-
-exp1.columns([0.3, 0.6])[-1].radio(
-    "Select Map Style",
-    options=["open-street-map", "carto-positron"],
-    format_func=lambda x: x.replace("-", " ").title(),
-    key="MAPBOX_STYLE",
-    horizontal=True,
-    label_visibility="collapsed",
+st.subheader(
+    f":blue[Average price of {st_pages.decorate_options(prop_type)} by locality]",
+    divider="blue",
 )
 
-exp1_tabs = exp1.tabs(
-    [
-        f"Average PRICE of {st_pages.decorate_options(prop_type)} (per sq.ft.)",
-        f"Average PRICE of {st_pages.decorate_options(prop_type)} (by sector)",
-        f"Average AREA of {st_pages.decorate_options(prop_type)} (by sector)",
-    ]
-)
+l, r = st.columns(2)
+city: str = l.selectbox(
+    "Select City",
+    options=(_ := prop_df["CITY"].unique()),
+    format_func=lambda x: x.title(),
+    disabled=True if len(_) == 1 else False,
+)  # type: ignore
 
-curr_df = prop_df.groupby("LOCALITY_NAME")[
+mapbox_bhk: int = r.selectbox(
+    "Select BHK",
+    options=[0] + sorted(prop_df["BEDROOM_NUM"].unique().tolist()),
+    format_func=lambda x: f"{int(x)} BHK".replace("99", "5+").replace(
+        "0 BHK", "Overall"
+    ),
+)  # type: ignore
+
+filter_with_bhk = prop_df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else prop_df
+
+curr_df = filter_with_bhk.groupby("LOCALITY_NAME")[
     ["AREA", "PRICE", "PRICE_PER_SQFT", "LATITUDE", "LONGITUDE"]
 ].mean()
+
 curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[
     ["AREA", "PRICE", "PRICE_PER_SQFT"]
-].round(2)
+].astype(int)
 
+with st.expander("👀 See the data used to make the scatter map."):
+    st.dataframe(curr_df.sort_values("PRICE"), use_container_width=True)
 
-def plot_scatter_mapbox(color: str, hover_data: list[str], **kwargs) -> Figure:
-    kwargs_for_scatter_mapbox: dict = dict(
-        data_frame=curr_df,
-        lat="LATITUDE",
-        lon="LONGITUDE",
-        color_continuous_scale=px.colors.cyclical.IceFire,
-        hover_name=curr_df.index.str.title(),
-        center=st_pages.get_center_lat_lon(curr_df),
-        opacity=0.5,
-        zoom=10,
-        height=700,
-        **kwargs,
-    )
-
-    fig = px.scatter_mapbox(
-        color=color,
-        hover_data=hover_data,
-        **kwargs_for_scatter_mapbox,
-    )
-    fig.update_traces(marker_size=12)
-    return fig
-
-
-with exp1_tabs[0]:
-    fig = plot_scatter_mapbox(
-        color="PRICE_PER_SQFT",
-        hover_data=["AREA", "PRICE"],
-        mapbox_style=st.session_state["MAPBOX_STYLE"],
-    )
-    st.plotly_chart(fig, True)
-
-with exp1_tabs[1]:
-    fig = plot_scatter_mapbox(
-        color="AREA",
-        hover_data=["PRICE_PER_SQFT", "PRICE"],
-        mapbox_style=st.session_state["MAPBOX_STYLE"],
-    )
-    st.plotly_chart(fig, True)
-
-with exp1_tabs[2]:
-    fig = plot_scatter_mapbox(
-        color="PRICE",
-        hover_data=["PRICE_PER_SQFT", "AREA"],
-        mapbox_style=st.session_state["MAPBOX_STYLE"],
-    )
-    st.plotly_chart(fig, True)
+# Plotly Mapbox
+fig = px.scatter_mapbox(
+    data_frame=curr_df,
+    lat="LATITUDE",
+    lon="LONGITUDE",
+    color_continuous_scale=px.colors.cyclical.IceFire,
+    hover_name=curr_df.index.str.title(),
+    center=st_pages.get_center_lat_lon(curr_df),
+    opacity=0.7,
+    zoom=10,
+    height=700,
+    color="PRICE",
+    hover_data=["AREA", "PRICE_PER_SQFT"],
+    mapbox_style="open-street-map",
+)
+fig.update_traces(marker_size=12)
+st.plotly_chart(fig, True)
 
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
