@@ -12,20 +12,20 @@
 - [x] Use `functions` with `@st.cache` decorator to optimize the **Analytics Page**.
 - [ ] Make a page to show Model Evaluation Metrics. Which are useful for other developers.
 - [ ] ~~Add logging in the app.~~ **(Not for now.)**
-- [ ] Fetch the new discussed Gurgaon data and perform EDA on it. Then, use that data in the project for better analysis and prediction.
+- [x] Fetch the new discussed Gurgaon data and perform EDA on it. Then, use that data in the project for better analysis and prediction.
 - [ ] Do something about Recommender system.
 
 ## Analytics Features
 
-- [ ] Add selectbox to select CITY and also refresh the map which recenter the map to the city.
-- [ ] Add BHK radio button in `scatter_mapbox` plot.
+- [x] Add selectbox to select CITY and also refresh the map which recenter the map to the city.
+- [x] Add BHK radio button in `scatter_mapbox` plot.
 - [ ] Create new page and add better plots in new page.
 
 # Features
 
-- [ ] Use `st.tabs()` instead of `st.radio()` for good UI.
-- [ ] Add a custom streamlit theme.
-- [ ] Enhance the radio buttons in the [page](./pages/1_Price_Prediction.py) or you can use `st.selectbox` instead.
+- [ ] ~~Use `st.tabs()` instead of `st.radio()` for good UI.~~
+- [ ] ~~Add a custom streamlit theme.~~
+- [x] Enhance the radio buttons in the [page](./pages/1_Price_Prediction.py) or you can use `st.selectbox` instead.
 
 # Suggestions
 

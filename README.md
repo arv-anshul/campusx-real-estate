@@ -47,6 +47,7 @@ streamlit run Real_Estate_Project.py
 ## Acknowledgements
 
 - [99acres.com](https://99acres.com/): I used this website to gather the data for this project.
+- [@arv-anshul/99acres-scrape](https://github.com/arv-anshul/99acres-scrape): Used this Streamlit web-app to scrape data from 99acres.com website.
 - [CampusX DSMP](https://learnwith.campusx.com): I take inspirations and follow this course's **Capstone Project**.
 
 ## License
