@@ -185,60 +185,57 @@ fig = plot_bar(
 st.plotly_chart(fig, True)
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-# More Visualizations
+# Regression graph with Scatter-Plot
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-exp3 = st.expander("**💭 Insights on AREA, PRICE and PRICE_PER_SQFT**", expanded=True)
-exp3_tabs = exp3.tabs(
-    [
-        "AREA vs PRICE vs PRICE_PER_SQFT",
-        "Visualize Ranges",
-    ]
+st.subheader("📈 :blue[Plot Distributions of Different Parameters]", divider="blue")
+
+color_ = st.radio(
+    "Select Third Parameter (COLOR)",
+    options=[
+        None,
+        "BEDROOM_NUM",
+        "FLOOR_NUM",
+        "LUXURY_CATEGORY",
+    ],
+    horizontal=True,
 )
 
-with exp3_tabs[0]:
-    color_ = st.radio(
-        "Select third parameter (color)",
-        options=[
-            None,
-            "BEDROOM_NUM",
-            "FLOOR_NUM",
-            "LUXURY_CATEGORY",
-        ],
-        horizontal=True,
-    )
+x_ = st.radio(
+    "Select X-axis Value",
+    options=[
+        "AREA",
+        "PRICE_PER_SQFT",
+    ],
+    horizontal=True,
+)
 
-    x_ = st.radio(
-        "Select X-axis value",
-        options=[
-            "AREA",
-            "PRICE_PER_SQFT",
-        ],
-        horizontal=True,
-    )
+fig = plot_scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name=color_)
+st.plotly_chart(fig, True)
 
-    fig = plot_scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name=color_)
-    st.plotly_chart(fig, True)
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+# Range Visualizations with Box-Plot
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+st.subheader("🧐 :blue[Visualize Ranges of PRICE and AREA]", divider="blue")
+x_ = st.radio(
+    "Select X-axis Values",
+    options=[
+        None,
+        "BEDROOM_NUM",
+        "FLOOR_NUM",
+        "LUXURY_CATEGORY",
+    ],
+    horizontal=True,
+)
 
-with exp3_tabs[1]:
-    x_ = st.radio(
-        "Select X-axis Values",
-        options=[
-            "BEDROOM_NUM",
-            "FLOOR_NUM",
-            "LUXURY_CATEGORY",
-        ],
-        horizontal=True,
-    )
+y_ = st.radio(
+    "Select Y-axis Values",
+    options=[
+        "PRICE",
+        "AREA",
+        "PRICE_PER_SQFT",
+    ],
+    horizontal=True,
+)
 
-    y_ = st.radio(
-        "Select Y-axis Values",
-        options=[
-            "PRICE",
-            "AREA",
-            "PRICE_PER_SQFT",
-        ],
-        horizontal=True,
-    )
-
-    fig = plot_box(prop_df, x=x_, y=y_)
-    st.plotly_chart(fig, True)
+fig = plot_box(prop_df, x=x_, y=y_)
+st.plotly_chart(fig, True)
