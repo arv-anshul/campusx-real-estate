@@ -76,36 +76,49 @@ if prop_type != "res_land":
         ),
     )  # type: ignore
 
-filter_with_bhk = prop_df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else prop_df
 
-curr_df = filter_with_bhk.groupby("LOCALITY_NAME")[
-    ["AREA", "PRICE", "PRICE_PER_SQFT", "LATITUDE", "LONGITUDE"]
-].mean()
+@st.cache_data
+def get_df_for_scatter_map(mapbox_bhk: int | None) -> pd.DataFrame:
+    filter_with_bhk = (
+        prop_df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else prop_df
+    )
 
-curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[
-    ["AREA", "PRICE", "PRICE_PER_SQFT"]
-].astype(int)
+    curr_df = filter_with_bhk.groupby("LOCALITY_NAME")[
+        ["AREA", "PRICE", "PRICE_PER_SQFT", "LATITUDE", "LONGITUDE"]
+    ].mean()
 
+    curr_df[["AREA", "PRICE", "PRICE_PER_SQFT"]] = curr_df[
+        ["AREA", "PRICE", "PRICE_PER_SQFT"]
+    ].astype(int)
+    return curr_df
+
+
+curr_df = get_df_for_scatter_map(mapbox_bhk)
 with st.expander("👀 See the data used to make the scatter map."):
     st.dataframe(curr_df.sort_values("PRICE"), use_container_width=True)
 
-# Plotly Mapbox
-fig = px.scatter_mapbox(
-    data_frame=curr_df,
-    lat="LATITUDE",
-    lon="LONGITUDE",
-    color_continuous_scale=px.colors.cyclical.IceFire,
-    hover_name=curr_df.index.str.title(),
-    center=st_pages.get_center_lat_lon(curr_df),
-    opacity=0.7,
-    zoom=10,
-    height=700,
-    color="PRICE",
-    hover_data=["AREA", "PRICE_PER_SQFT"],
-    mapbox_style="open-street-map",
-)
-fig.update_traces(marker_size=12)
-st.plotly_chart(fig, True)
+
+@st.cache_data
+def plot_scatter_mapbox(df: pd.DataFrame) -> Figure:
+    fig = px.scatter_mapbox(
+        data_frame=curr_df,
+        lat="LATITUDE",
+        lon="LONGITUDE",
+        color_continuous_scale=px.colors.cyclical.IceFire,
+        hover_name=curr_df.index.str.title(),
+        center=st_pages.get_center_lat_lon(curr_df),
+        opacity=0.7,
+        zoom=10,
+        height=700,
+        color="PRICE",
+        hover_data=["AREA", "PRICE_PER_SQFT"],
+        mapbox_style="open-street-map",
+    )
+    fig.update_traces(marker_size=12)
+    return fig
+
+
+st.plotly_chart(plot_scatter_mapbox(curr_df), True)
 
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
@@ -209,7 +222,7 @@ x_ = st.radio(
     horizontal=True,
 )
 
-fig = plot_scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name=color_)
+fig = plot_scatter(prop_df, x=x_, y="PRICE", color=color_, hover_name="PROP_ID")
 st.plotly_chart(fig, True)
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
