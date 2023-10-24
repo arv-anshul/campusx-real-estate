@@ -48,27 +48,34 @@ except FileNotFoundError:
     st.toast("Data upload kar bhai!", icon="🤦")
     _stop()
 
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+# ⚙️ Configuration for Analysis
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
+st.header(":red[⚙️ Configuration for Analysis]", divider="red")
+city: str = st.selectbox(
+    "🌇 Select City",
+    options=(_ := prop_df["CITY"].unique()),
+    format_func=lambda x: x.title(),
+    disabled=True if len(_) == 1 else False,
+)  # type: ignore
+
+st.divider()
+
+# --- --- Filter and Update Dataset --- --- #
+prop_df = prop_df.query("CITY==@city")
 prop_df["PRICE_PER_SQFT"] = prop_df["PRICE"].div(prop_df["AREA"])
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Visualizations with Plotly Mapbox
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 st.subheader(
-    f":blue[Average price of {st_pages.decorate_options(prop_type)} by locality]",
+    f":blue[Average price of {st_pages.decorate_options(prop_type)} by locality in {city.title()}]",
     divider="blue",
 )
 
-l, r = st.columns(2)
-city: str = l.selectbox(
-    "Select City",
-    options=(_ := prop_df["CITY"].unique()),
-    format_func=lambda x: x.title(),
-    disabled=True if len(_) == 1 else False,
-)  # type: ignore
-
 mapbox_bhk: int | None = None
 if prop_type != "res_land":
-    mapbox_bhk = r.selectbox(
+    mapbox_bhk = st.selectbox(
         "Select BHK",
         options=[0] + sorted(prop_df["BEDROOM_NUM"].unique().tolist()),
         format_func=lambda x: f"{int(x)} BHK".replace("99", "5+").replace(
@@ -78,10 +85,8 @@ if prop_type != "res_land":
 
 
 @st.cache_data
-def get_df_for_scatter_map(mapbox_bhk: int | None) -> pd.DataFrame:
-    filter_with_bhk = (
-        prop_df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else prop_df
-    )
+def get_df_for_scatter_map(df: pd.DataFrame, mapbox_bhk: int | None) -> pd.DataFrame:
+    filter_with_bhk = df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else df
 
     curr_df = filter_with_bhk.groupby("LOCALITY_NAME")[
         ["AREA", "PRICE", "PRICE_PER_SQFT", "LATITUDE", "LONGITUDE"]
@@ -93,7 +98,7 @@ def get_df_for_scatter_map(mapbox_bhk: int | None) -> pd.DataFrame:
     return curr_df
 
 
-curr_df = get_df_for_scatter_map(mapbox_bhk)
+curr_df = get_df_for_scatter_map(prop_df, mapbox_bhk)
 with st.expander("👀 See the data used to make the scatter map."):
     st.dataframe(curr_df.sort_values("PRICE"), use_container_width=True)
 
@@ -101,7 +106,7 @@ with st.expander("👀 See the data used to make the scatter map."):
 @st.cache_data
 def plot_scatter_mapbox(df: pd.DataFrame) -> Figure:
     fig = px.scatter_mapbox(
-        data_frame=curr_df,
+        data_frame=df,
         lat="LATITUDE",
         lon="LONGITUDE",
         color_continuous_scale=px.colors.cyclical.IceFire,
@@ -200,7 +205,10 @@ st.plotly_chart(fig, True)
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Regression graph with Scatter-Plot
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-st.subheader("📈 :blue[Plot Distributions of Different Parameters]", divider="blue")
+st.subheader(
+    f"📈 :blue[Plot Distributions of Different Parameters of {city.title()} City]",
+    divider="blue",
+)
 
 color_ = st.radio(
     "Select Third Parameter (COLOR)",
@@ -228,7 +236,10 @@ st.plotly_chart(fig, True)
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Range Visualizations with Box-Plot
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-st.subheader("🧐 :blue[Visualize Ranges of PRICE and AREA]", divider="blue")
+st.subheader(
+    f"🧐 :blue[Visualize Ranges of PRICE and AREA in {city.title()} City]",
+    divider="blue",
+)
 x_ = st.radio(
     "Select X-axis Values",
     options=[
