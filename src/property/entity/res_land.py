@@ -18,5 +18,4 @@ class ResLand(PropertyType):
     def extract_this_property(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.query("PROPERTY_TYPE==@self._PROPERTY_TYPE").reset_index(drop=True)
 
-        df["PROP_ID"] = self.prop_type
         return df

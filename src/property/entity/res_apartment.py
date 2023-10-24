@@ -39,5 +39,4 @@ class ResApartment(PropertyType):
             ].index
         ).reset_index(drop=True)
 
-        df["PROP_ID"] = self.prop_type
         return df

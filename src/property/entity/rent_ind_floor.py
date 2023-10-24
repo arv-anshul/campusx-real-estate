@@ -33,5 +33,4 @@ class RentIndFloor(PropertyType):
         df = df.query("PROPERTY_TYPE==@self._PROPERTY_TYPE").reset_index(drop=True)
         df = _utils.query_for_rental_property(df, "PRICE<8_00_000")
 
-        df["PROP_ID"] = self.prop_type
         return df
