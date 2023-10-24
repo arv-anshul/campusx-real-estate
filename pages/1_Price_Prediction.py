@@ -28,7 +28,6 @@ prop_type: PropertyAlias = st.sidebar.radio(
     options=list(ALL_PROPERTY.keys()),
     format_func=st_pages.decorate_options,
     key="PROPERTY_TYPE",
-    horizontal=True,
     label_visibility="collapsed",
 )  # type: ignore
 
