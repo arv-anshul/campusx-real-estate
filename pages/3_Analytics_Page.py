@@ -66,13 +66,15 @@ city: str = l.selectbox(
     disabled=True if len(_) == 1 else False,
 )  # type: ignore
 
-mapbox_bhk: int = r.selectbox(
-    "Select BHK",
-    options=[0] + sorted(prop_df["BEDROOM_NUM"].unique().tolist()),
-    format_func=lambda x: f"{int(x)} BHK".replace("99", "5+").replace(
-        "0 BHK", "Overall"
-    ),
-)  # type: ignore
+mapbox_bhk: int | None = None
+if prop_type != "res_land":
+    mapbox_bhk = r.selectbox(
+        "Select BHK",
+        options=[0] + sorted(prop_df["BEDROOM_NUM"].unique().tolist()),
+        format_func=lambda x: f"{int(x)} BHK".replace("99", "5+").replace(
+            "0 BHK", "Overall"
+        ),
+    )  # type: ignore
 
 filter_with_bhk = prop_df.query("BEDROOM_NUM==@mapbox_bhk") if mapbox_bhk else prop_df
 
@@ -110,12 +112,6 @@ st.plotly_chart(fig, True)
 # Optimized Functions
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 @st.cache_data
-def plot_pie(df: pd.DataFrame, names: str | None, **kwargs) -> Figure:
-    fig = px.pie(df, names=names, **kwargs)
-    return fig
-
-
-@st.cache_data
 def plot_bar(df: pd.DataFrame, x: list[str], y: str | None, **kwargs) -> Figure:
     fig = px.bar(df, x=x, y=y, **kwargs)
     return fig
@@ -141,54 +137,52 @@ def plot_box(df: pd.DataFrame, x: str | None, y: str | None, **kwargs) -> Figure
 
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-# Basic Insights Plots
+# Insights Plots on BHK Sector-Wise
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 if prop_type == "res_land":
     st.info(f"No BHK comparison for {st_pages.decorate_options(prop_type)}", icon="🥹")
     _stop()
 
-exp2 = st.expander("**🧠 Basic Insights Plots**", expanded=True)
+st.subheader(
+    f":blue[🏘️ BHK Insights of {city.title()} City Sector-Wise]", divider="blue"
+)
 
-locality: str = exp2.selectbox(
+locality: str = st.selectbox(
     "Select Sector",
     options=["Overall"] + prop_df["LOCALITY_NAME"].sort_values().unique().tolist(),
     format_func=lambda x: x.title(),
     key="LOCALITY_NAME",
 )  # type: ignore
+
 curr_df = (
     prop_df
     if locality == "Overall"
     else prop_df.query("LOCALITY_NAME==@locality").copy()
 )
+curr_df["BEDROOM_NUM"] = curr_df["BEDROOM_NUM"].replace(99, "More than 5")
 
-exp2_tabs = exp2.tabs(
-    [
-        "BHK Count",
-        "Insights on BHK",
-    ]
+curr_df = (
+    curr_df.groupby("BEDROOM_NUM")[["PRICE", "AREA", "PRICE_PER_SQFT"]]
+    .mean()
+    .astype(int)
 )
 
-with exp2_tabs[0]:
-    curr_df["BEDROOM_NUM"] = curr_df["BEDROOM_NUM"].apply(prop_utils.format_99_option)
-    fig = plot_pie(curr_df, names="BEDROOM_NUM")
-    st.plotly_chart(fig, True)
+with st.expander("👀 See the data used to make below plot."):
+    st.dataframe(curr_df.T, use_container_width=True)
 
-
-with exp2_tabs[1]:
-    curr_data = (
-        curr_df.groupby("BEDROOM_NUM")[["PRICE", "AREA", "PRICE_PER_SQFT"]]
-        .mean()
-        .round(2)
-    )
-    _ = st.columns([0.35, 0.7])[-1].radio(
-        "Choose Comparison Value",
-        options=["PRICE_PER_SQFT", "AREA", "PRICE"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
-    fig = plot_bar(curr_data, x=curr_data.index.tolist(), y=_)
-    st.plotly_chart(fig, True)
-    st.dataframe(curr_data.T, use_container_width=True)
+_ = st.columns([0.35, 0.7])[-1].radio(
+    "Choose Comparison Value",
+    options=["PRICE_PER_SQFT", "AREA", "PRICE"],
+    horizontal=True,
+    label_visibility="collapsed",
+)
+fig = plot_bar(
+    curr_df,
+    x=curr_df.index.tolist(),
+    y=_,
+    labels={"x": "BEDROOM_NUM"},
+)
+st.plotly_chart(fig, True)
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # More Visualizations
