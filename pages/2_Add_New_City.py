@@ -6,11 +6,10 @@ from src.data import validate
 from src.data.cleaner import DataCleaner
 from src.property.entity import ALL_PROPERTY
 from src.typing import stop as _stop
-from src.utils import st_pages
 
 st.set_page_config("Add new city", "🏙️", "wide", "expanded")
 st_msg = st.empty()
-st.subheader(st_pages.colorizer("Add new city into dataset", "green"), divider="green")
+st.header(":blue[Add new city into dataset]", divider="blue")
 
 with st.form("add_new_city"):
     uploaded = st.file_uploader(
@@ -30,7 +29,6 @@ if uploaded is None:
 
 df = pd.read_csv(uploaded)
 
-
 # Validate the user's dataset for further progress
 try:
     validate.validate_dataset(df)
@@ -47,22 +45,60 @@ with st.spinner("Your Dataset is Cleaning..."):
 st.toast("Your dataset is cleaned.", icon="🤓")
 
 # Split dataset into different properties
-progress_text = "Splitting the dataset into different properties..."
-with st.progress(0, progress_text):
-    total = len(ALL_PROPERTY)
-
-    for i, prop in enumerate(ALL_PROPERTY.values(), 1):
-        prop_df = prop.extract_this_property(df)
-        prop.dump_dataframe(prop_df, "user", extend)
-
-        st.progress(i / total, progress_text)
+for i, prop in enumerate(ALL_PROPERTY.values(), 1):
+    prop_df = prop.extract_this_property(df)
+    prop.dump_dataframe(prop_df, "user", extend)
 
 # --- --- Uploaded dataset summary --- --- #
-tab1, tab2 = st.tabs(["🗃️ Show Dataset", "📈 Dataset Summary"])
+st.header("📊 :red[Dataset Summary]", divider="red")
 
-with tab1:
-    st.dataframe(df.sample(100).reset_index(drop=True))
-    st.info("Showing a sample of your dataset. (100 rows)", icon="👀")
+l, m1, m2, r = st.columns(4)
+l.metric(":blue[**Shape of data**]", str(df.shape))
+m1.metric(":blue[**No. of Cities**]", df["CITY"].nunique())
+m2.metric(":blue[**No. of PropertyTypes**]", df["PROPERTY_TYPE"].nunique())
 
-with tab2:
-    st.warning("Cooking a function to show the summary of your dataset.", icon="🧑‍🍳")
+st.write(f":blue[**Columns:**] `{df.columns.tolist()}`")
+
+l, r = st.columns(2)
+# Insights about CITY column
+l.subheader(":blue[Insights about Cities]", divider="blue")
+grp_by_city = df.groupby("CITY")
+l.dataframe(
+    (
+        grp_by_city.aggregate(
+            {
+                "PROP_ID": "count",
+                "PRICE": "mean",
+                "AREA": "mean",
+            }
+        )
+        .astype(int)
+        .sort_values("PROP_ID", ascending=False)
+    ),
+    use_container_width=True,
+    height=178,
+)
+
+# Insights about PROPERTY_TYPE column
+r.subheader(":blue[Insights about PropertyTypes]", divider="blue")
+grp_by_prop_type = df.groupby("PROPERTY_TYPE")
+r.dataframe(
+    (
+        grp_by_prop_type.aggregate(
+            {
+                "PROP_ID": "count",
+                "PRICE": "mean",
+                "AREA": "mean",
+            }
+        )
+        .astype(int)
+        .sort_values("PROP_ID", ascending=False)
+    ),
+    use_container_width=True,
+)
+
+st.link_button(
+    "**Click For More Insights**",
+    "/Analytics_Page",
+    use_container_width=True,
+)

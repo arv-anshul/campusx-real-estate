@@ -23,9 +23,17 @@
 
 # Features
 
-- [ ] ~~Use `st.tabs()` instead of `st.radio()` for good UI.~~
-- [ ] ~~Add a custom streamlit theme.~~
+- [x] ~~Use `st.tabs()` instead of `st.radio()` for good UI.~~
+- [x] ~~Add a custom streamlit theme.~~
 - [x] Enhance the radio buttons in the [page](./pages/1_Price_Prediction.py) or you can use `st.selectbox` instead.
+
+- [x] Add summary for **Newly Added Data** by user in [Add New City Page](pages/2_Add_New_City.py)
+  - [x] Insights about:
+    - Shape of the Data
+    - No. of property in each **CITY**
+    - No. of property in each **PROPERTY_TYPE**
+  - [x] ~~Show Distribution of data. _Plot graphs for this._ (in `st.expander`)~~
+  - [x] Write that for more insights go to [Analytics Page](pages/3_Analytics_Page.py)
 
 # Suggestions
 
