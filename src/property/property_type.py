@@ -45,4 +45,5 @@ class PropertyType(ABC):
             old_df = pd.read_csv(fp)
             df = pd.concat([old_df, df], axis="index").drop_duplicates(["PROP_ID"])
 
+        df["PROP_ID"] = "https://99acres.com/" + df["PROP_ID"].str.upper()
         df.to_csv(fp, index=False)
